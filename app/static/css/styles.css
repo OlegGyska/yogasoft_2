@@ -353,6 +353,11 @@ textarea {
     padding-right: 30px;
 }
 
+.wide_btn {
+    padding-left: 40px;
+    padding-right: 40px;
+}
+
 .navbar-text {
     margin-right: 0;
 }

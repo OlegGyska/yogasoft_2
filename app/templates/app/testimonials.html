@@ -43,11 +43,11 @@
                     <p><label for="id_author_name">{% trans "Author name:" %}</label><input class="form-control" id="id_author_name" maxlength="100" name="author_name" type="text" value="{{ user.first_name }}" required /></p>
                     <p><label for="id_author_email">{% trans "Author email:" %}</label><input class="form-control" id="id_author_email" maxlength="254" name="author_email" type="text" value="{{ user.email }}" required /></p>
                     <p><label for="id_message">{% trans "Message:" %}</label><textarea class="form-control" cols="40" id="id_message" name="message" rows="7" required></textarea></p>
-                    <input type="submit" class="btn btn-success" value="{% trans "Save" %}" name="save">
+                    <input type="submit" class="btn btn-success wide_btn" value="{% trans "Save" %}" name="save">
                 </form>
             </div>
         </div>
         <hr>
+
     </div>
-    <hr>
 {% endblock %}
