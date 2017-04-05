@@ -1,0 +1,70 @@
+{% extends 'base.html' %}
+{% load i18n %}{% load static %}
+{% block title %}  {% trans "Portfolio" %}{% endblock %}
+{% block content %}
+
+    <!-- /.row -->
+    <div class="container-fluid divparent"><h1>Our Portfolio</h1></div>
+    <div class="container-fluid">
+            {% if object_list %}
+                {% for item in object_list %}
+                    <div class="row">
+                                <div class="col-lg-6 col-md-6 prt_margin"> <!-- Left portfolio record -->
+                                    <div class="row" style="min-height: 160px">
+                                        <div class="col-lg-11 col-lg-offset-1 portfolio-item">
+                                            <a href="{% url "app:portfolio_detail" pk=item.0.id %}">
+                                                <img class="img-responsive prt_img_limit" src={{ item.0.imagecontentclass_set.all.0.image.url }} alt="">
+                                            </a>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-lg-11 col-lg-offset-1 portfolio-item">
+                                            {% if LANGUAGE_CODE == 'en' %}
+                                                <h3>{{ item.0.name }}</h3>
+                                            {% else %}
+                                                <h3>{{ item.0.nameUA }}</h3>
+                                            {% endif %}
+                                            <a href="{% url "app:portfolio_detail" pk=item.0.id %}">{% trans "More" %}</a>
+                                            {% if LANGUAGE_CODE == 'en' %}
+                                                <p>{{ item.0.description }}</p>
+                                            {% else %}
+                                                <p>{{ item.0.descriptionUA }}</p>
+                                            {% endif %}
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="col-lg-6 col-md-6 prt_margin"> <!-- Right portfolio record -->
+                                    <div class="row">
+                                        <div class="col-lg-11 col-lg-offset-1 portfolio-item">
+                                            <a href="{% url "app:portfolio_detail" pk=item.1.id %}">
+                                                {% if item.1 %}
+                                                    <img class="img-responsive prt_img_limit" src={{ item.1.imagecontentclass_set.all.0.image.url }} alt="">
+                                                {% endif %}
+                                            </a>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-lg-11 col-lg-offset-1 portfolio-item">
+                                            {% if item.1 %}
+                                                {% if LANGUAGE_CODE == 'en' %}
+                                                    <h3>{{ item.1.name }}</h3>
+                                                {% else %}
+                                                    <h3>{{ item.1.nameUA }}</h3>
+                                                {% endif %}
+                                                <a href="{% url "app:portfolio_detail" pk=item.1.id %}">{% trans "More" %}</a>
+                                                {% if LANGUAGE_CODE == 'en' %}
+                                                    <p>{{ item.1.description }}</p>
+                                                {% else %}
+                                                    <p>{{ item.1.descriptionUA }}</p>
+                                                {% endif %}
+                                            {% endif %}
+                                        </div>
+                                    </div>
+                                </div>
+
+                    </div>
+                {% endfor %}
+            {% endif %}
+    </div>
+{%  endblock  %}

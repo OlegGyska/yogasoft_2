@@ -1,0 +1,193 @@
+{% load static %}
+{% load i18n %}
+{% load popular_tags %}
+<!DOCTYPE html>
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+    <title>Yogasoft</title>
+
+    <link href="{% static "css/glyphicons.css" %}" rel="stylesheet">
+    <link href="{% static "css/halflings.css" %}" rel="stylesheet">
+    <link href="{% static "css/fontello.css" %}" rel="stylesheet">
+    <link href="{% static "css/flexslider.css" %}" rel="stylesheet">
+    <link href="{% static "css/nivo-slider.css" %}" rel="stylesheet">
+    <link href="{% static "css/style.css" %}" rel="stylesheet">
+    <link href="{% static "css/custom.css" %}" rel="stylesheet">
+
+</head>
+<body>
+
+<div id="boxedWrapper">
+    <div class="navbar navbar-static-top">
+        <div class="navbar-inner">
+            <div class="container">
+                <button type="button" class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+                <a class="brand" href="{% url 'app:index_page' %}"><span class="mcolor">Y</span>ogasoft</a>
+
+                <div class="nav-collapse">
+                    <ul class="nav navbar-nav pull-right">
+                      <li class="active"><a href="{% url 'app:index_page' %}">{% trans "Home" %}</a></li>
+                      <li><a href="{% url 'app:blog_list_view' %}">{% trans "Blog" %}</a></li>
+                      <li><a href="{% url 'app:portfolio' %}">{% trans "Portfolio" %}</a></li>
+                      <li><a href="{% url 'app:testimonials' %}">{% trans "Testimonials" %}</a></li>
+                      <li><a href="{% url 'app:contact_us' %}" >{% trans "Contact us" %}</a></li>
+                      <li class="glyphicon_toolbar"><a href="#" id="search_toggler" ><span class="glyphicons search"><i></i></span></a></li>
+                      <li class="glyphicon_toolbar"><a href="#" id="userbar_toggler" >
+                          {% if request.user.is_authenticated %}
+                            <span class="glyphicons user active"><i></i></span></a>
+                          {% else %}
+                            <span class="glyphicons user"><i></i></span></a>
+                          {% endif %}
+                      </li>
+                      {% if user.useryoga.is_admin or user.is_superuser %}
+                        <li class="glyphicon_toolbar"><a href="{% url 'app:site_admin' %}" id="serch_toggler" ><span class="glyphicons cogwheels"><i></i></span></a></li>
+                      {% endif %}
+                      <li class="language_flag_inline"><a href="{% url 'app:contact_us' %}" ><img style="max-height: 38px;" src="{% static "images/us_flag.png" %}"> English</a></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        <div class="language_flag">
+            <form action="{% url 'set_language' %}" method="post">
+                {% csrf_token %}
+                <input name="next" type="hidden" value="{{ redirect_to }}" />
+                {% if LANGUAGE_CODE == 'en' %}
+                    <input type="image" style="max-height: 38px;" src="{% static "images/uk_flag.png" %}" alt="submit" name="language" value="uk"/>
+                {% else %}
+                    <input type="image" style="max-height: 38px;" src="{% static "images/us_flag.png" %}" alt="submit" name="language" value="en"/>
+                {% endif %}
+            </form>
+        </div>
+
+        <div id="toggled_search" class="navbar-inner bootsnipp-search animate open">
+            <div class="container">
+                <form action="http://bootsnipp.com/search" method="GET" role="search">
+                    <div class="input-group">
+                        <input style="display: table-cell" type="text" class="form-control" name="q" placeholder="{% trans 'Search' %}...">
+                        <span class="input-group-btn" style="display: table-cell">
+                            <button id="hide_search" class="btn btn-danger" type="reset"><span class="halflings remove"><i></i></span></button>
+                        </span>
+                    </div>
+                </form>
+            </div>
+        </div>
+        <div id="toggled_userbar" class="navbar-inner login-toolbar">
+            <div class="container">
+                {% if request.user.is_authenticated %}
+                    <div class="row-v>fluid" style="margin-bottom: 0">
+                        <div class="span10" style="margin-bottom: 0">
+                            <div class="input-group">
+                                <a href="/logout" style="font-size: 16px">{{ user.username }}, {% trans 'logout' %}</a>
+                            </div>
+                        </div>
+                    </div>
+                {% else %}
+                    <div class="row-fluid" style="margin-bottom: 0">
+                        <div class="span10" style="margin-bottom: 0">
+                            <form role="form" method="post" action="{% url 'login' %}" accept-charset="UTF-8">
+                                {% csrf_token %}
+                                <div class="input-group">
+                                    <input type="text" class="form-control" name="username" placeholder="{% trans "Login" %}" required>
+                                    <input type="password" class="form-control"  name="password" placeholder="{% trans 'Password' %}" required>
+                                    <input type="submit" class="btn btn-small btn-primary form-control" value="{% trans "Login" %}">
+                                    <a href="{% url 'app:registration' %}" >{% trans "Registration" %}</a>
+                                    <a href="{% url 'password_reset' %}" >{% trans "Forgot password?" %}</a>
+                                </div>
+                            </form>
+                        </div>
+                        <div class="span2" style="margin-bottom: 0">
+                            <form>
+                                <div class="input-group">
+                                    <button class="form-control social"><span class="glyphicons google_plus"><i></i></span></button>
+                                    <button class="form-control social"><span class="glyphicons facebook"><i></i></span></button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+
+    {% block content %}
+    {% endblock %}
+
+    <div id="footer">
+        <div class="container">
+            <div class="row-fluid">
+                <div class="span3">
+                    <h4 class="medium">Contact Us</h4>
+
+                    <div class="contactBox">
+                        <p><strong>YogaSoft Agency, Inc.</strong></p>
+
+                        <p><span class="halflings phone"><i></i></span>
+                            +38 (020) 1234 5678</p>
+                        <p><span class="halflings envelope"><i></i></span>
+                            <a href="#">yogasoft@gmail.com</a></p>
+                    </div>
+                </div>
+
+                <div class="span6">
+                    <h4 class="medium">Tags</h4>
+                    <div class="tagcloud">
+                        {% popular_tags %}
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="footNotes">
+            <div class="container">
+                <div class="row-fluid">
+                    <div class="span12">
+                        <p class="pull-left">
+                            © 2017 Yogasoft | <a href="#">Terms</a> | <a href="#">Privacy</a>
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- / footer -->
+    <a href="#" id="toTop" class="halflings chevron-up"><i></i> Back to top</a>
+</div>
+<!-- / boxedWrapper -->
+<script src="{% static "js/jquery.min.js" %}"></script>
+<script src="{% static "js/bootstrap.min.js" %}"></script>
+<script src="{% static "js/jquery.contenthover.min.js" %}"></script>
+<script src="{% static "js/jquery.flexslider-min.js" %}"></script>
+<script src="{% static "js/jquery.nivo.slider.pack.js" %}"></script>
+<script src="{% static "js/jquery.easing.js" %}"></script>
+<script src="{% static "js/jquery.quicksand.js" %}"></script>
+<script src="{% static "js/ct.3LevelAccordion.min.js" %}"></script>
+<script src="{% static "js/jquery-ui-effects.js" %}"></script>
+<script src="{% static "js/ctDrillDown.min.js" %}"></script>
+<script src="{% static "js/jquery.tweet.js" %}"></script>
+<script src="{% static "js/main.js" %}"></script>
+<script>
+jQuery("#search_toggler").click(function () {
+    jQuery("#toggled_search").toggle();
+});
+
+jQuery("#hide_search").click(function () {
+    jQuery("#toggled_search").hide();
+});
+jQuery("#userbar_toggler").click(function () {
+    jQuery("#toggled_userbar").toggle();
+});
+
+jQuery("#hide_userbar").click(function () {
+    jQuery("#toggled_userbar").hide();
+});
+</script>
+
+</body>
+</html>

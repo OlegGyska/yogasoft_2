@@ -1,0 +1,63 @@
+{% extends 'base.html' %}
+{% load popular_tags %}
+{% load i18n %}
+
+{% block title %}
+    {% trans "Tags administration" %}
+{% endblock %}
+
+{% block content %}
+
+    <div class="container-fluid">
+        <h2 style="text-align: center">{% trans "Tags administration" %}</h2>
+        <hr>
+        <div class="panel panel-default">
+            <div class="panel-heading">{% trans "Tags list" %}</div>
+            <table class=" table table-responsive">
+                <tr class="row">
+                    <td class="col-md-1">{% trans "ID" %}</td>
+                    <td class="col-md-5">{% trans "Name" %}</td>
+                    <td class="col-md-6"></td>
+                </tr>
+                {% for tag in tags_obj %}
+                    <tr class="row">
+                        <td class="col-md-1">{{ tag.id }}</td>
+                        <td class="col-md-5">{{ tag.name }}</td>
+                        <td class="col-md-6">
+                            <form action="{% url 'app:tags_admin' tag.id%}" method="POST" onsubmit="return confirm('{% trans "Delete tag?" %}')">
+                                {% csrf_token %}
+                                <input type="submit" class="btn btn-xs btn-danger table_btn pull-right" value="{% trans "Delete" %}" name="delete">
+                            </form>
+                        </td>
+                    </tr>
+                {% endfor %}
+            </table>
+        </div>
+        <p>
+            Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}&nbsp|&nbsp
+            {% if page_obj.has_previous %}
+                <a href="{% url 'app:tags_admin' %}{% q_transform request page=page_obj.previous_page_number %}">Previous</a>
+            {% else %}
+                <span style="color: grey">Previous</span>
+            {% endif %}
+            {% if page_obj.has_next %}
+                <a href="{% url 'app:tags_admin' %}{% q_transform request page=page_obj.next_page_number %}">Next</a>
+            {% else %}
+                <span style="color: grey">Next</span>
+            {% endif %}
+        </p>
+
+        <hr>
+        <h4>{% trans "Add new tag" %}</h4>
+        <div class="row">
+            <div class="col-md-4">
+                <form action="{% url 'app:tags_admin'%}" method="POST" onsubmit="return confirm('{% trans "Save nev tag?" %}')">
+                    {% csrf_token %}
+                    <p><label>{% trans "Tag:" %}</label><input class="form-control"  maxlength="30" name="tag_name" type="text" required autofocus/></p>
+                    <input type="submit" class="btn btn-success wide_btn" value="{% trans "Save" %}" name="save">
+                </form>
+            </div>
+        </div>
+        <hr>
+    </div>
+{% endblock %}

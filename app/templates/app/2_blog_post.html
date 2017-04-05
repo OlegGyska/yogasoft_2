@@ -1,0 +1,163 @@
+{% extends 'base_2.html' %}
+{% load i18n %}
+{% block title %}
+    {% trans "Blog" %}
+{% endblock %}
+{% block content %}
+    <div class="titleBox">
+        <div class="container">
+            <h1 class="big pull-left">{% trans 'Our blog' %}</h1>
+        </div>
+    </div>
+    <div class="container">
+    <!-- / wide title -->
+        <div class="row-fluid topSpace">
+            <div class="span12">
+                <div class="blogContainer">
+                    <!-- blog content -->
+                    <div class="blogItem">
+                        <div class="bPhoto">
+                           <img src="{{ object.blogpostimage_set.all.0.image.url }}" alt=" ">
+                        </div>
+                        <div class="bDescription">
+                            {% if LANGUAGE_CODE == 'en' %}
+                                <h3 class="light">{{ object.name }}</h3>
+                            {% else %}
+                                <h3 class="light">{{ object.nameUA }}</h3>
+                            {% endif %}
+                            <hr>
+                                <span class="halflings calendar metaText">
+                                  <i></i>{{ object.date }}
+                                </span>
+                                <span class="halflings comments metaText">
+                                  <i></i> <a href="#">{{ comments|length }} comments</a>
+                                </span>
+                                <span class="halflings tag metaText">
+                                    <i></i>
+                                    {% for i in tags %}
+                                        <a href="{% url 'app:blog_list_view_tag' tag=i.name %}">{{ i }}</a>
+                                    {% endfor %}
+                                </span>
+                            <hr>
+                           <div class="cmsContent">
+                               <p>
+                                   {% if LANGUAGE_CODE == 'en' %}
+                                       <h3>{{ object.text }}</h3>
+                                   {% else %}
+                                       <h3>{{ object.textUA }}</h3>
+                                   {% endif %}
+                               </p>
+                           </div>
+                        </div>
+                        <!-- / bDescription -->
+                    </div>
+                    <!-- / blogItem -->
+                    <div class="row-fluid topSpace">
+                    <div class="span12 blog_comments">
+                       <!-- comments start -->
+                       <h3 class="twoLines">3 Comments</h3>
+                           <ul class="commentList">
+                               {% for comment in comments.items %}
+                                   <li>
+                                       <img src="https://www.w3schools.com/bootstrap/img_avatar1.png" class="avatar" alt="" width="65px">
+                                       <span class="author">{{ comment.0.author_name }}</span>
+                                       <span class="date">{{ comment.0.time }} | <button data-toggle="collapse" data-target="#sec_lvl_{{ comment.0.id }}"></button> <a href="#" >Reply</a></span>
+                                       <p>
+                                           {{ comment.0.message }}
+                                       </p>
+                                       <hr>
+                                       <div class="row-fluid collapse" id="sec_lvl_{{ comment.0.id }}">
+                                           <div class="span2"></div>
+                                           <div class="span10">
+                                               <form id="sec_com{{ comment.0.pk }}" method="post" action="{% url "app:add_second_level_comment" pk=object.pk comm_pk=comment.0.pk %}">
+                                                   {% csrf_token %}
+                                                   <fieldset>
+                                                       {% if not user.is_authenticated %}
+                                                           <div class="row-fluid">
+                                                               <div class="span4">
+                                                                   <label class="control-label">Name</label>
+                                                                   <input type="text" class="span12" name="author_name">
+                                                               </div>
+                                                               <div class="span4">
+                                                                   <label>Email</label>
+                                                                   <input type="text" class="span12" name="author_email">
+                                                               </div>
+                                                           </div>
+                                                       {% endif %}
+                                                       <div class="row-fluid">
+                                                           <div class="span8">
+                                                               <label>Comment</label>
+                                                               <textarea class="span12" name="message" rows="4"></textarea>
+                                                           </div>
+                                                       </div>
+                                                       <div class="row-fluid">
+                                                           <div class="span12">
+                                                               <input type="submit" value="{% trans 'Add comment' %}" class="btn btn-small btn-primary">
+                                                           </div>
+                                                       </div>
+                                                   </fieldset>
+                                               </form>
+                                           </div>
+                                       </div>
+                                       <ol>
+                                           {% for sl_comment in comment.1 %}
+                                               <li>
+                                                   <img src="https://www.w3schools.com/bootstrap/img_avatar1.png" class="avatar" alt="" width="65px">
+                                                   <span class="author">{{ sl_comment.author_name }}</span>
+                                                   <span class="date">{{ sl_comment.time }}</span>
+                                                   <p>
+                                                       {{ sl_comment.message }}
+                                                   </p>
+                                                   <hr>
+                                               </li>
+                                           {% endfor %}
+                                       </ol>
+                                   </li>
+                               {% endfor %}
+                           </ul>
+                    </div>
+                    </div> <!-- / row-fluid -->
+                    <div class="row-fluid blog_comments">
+                        <div class="span12">
+                           <h3 class="twoLines">Leave a Comment</h3>
+
+                            <form method="post" action="{% url "app:add_comment" pk=object.pk %}">
+                                {% csrf_token %}
+                                <fieldset>
+                                    {% if not user.is_authenticated %}
+                                        <div class="row-fluid">
+                                            <div class="span4">
+                                                <label class="control-label">Name</label>
+                                                <input type="text" class="span12" name="author_name">
+                                            </div>
+                                            <div class="span4">
+                                                <label>Email</label>
+                                                <input type="text" class="span12" name="author_email">
+                                            </div>
+                                        </div>
+                                    {% endif %}
+                                    <div class="row-fluid">
+                                        <div class="span8">
+                                            <label>Comment</label>
+                                            <textarea class="span12" name="message" rows="4"></textarea>
+                                        </div>
+                                    </div>
+
+                                    <div class="row-fluid">
+                                        <div class="span12">
+                                            <input type="submit" value="{% trans 'Add comment' %}" class="btn btn-small btn-primary">
+                                        </div>
+                                    </div>
+                                </fieldset>
+                            </form>
+
+                        </div>
+                    </div>
+                    <!-- / blog content -->
+                    </div>
+
+            </div>
+        </div>
+        <!-- / row-fluid -->
+    </div>
+{% endblock %}
