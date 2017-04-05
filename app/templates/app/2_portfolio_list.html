@@ -1,0 +1,60 @@
+{% extends 'base_2.html' %}
+{% load i18n %}
+{% block title %}
+    {% trans "Blog" %}
+{% endblock %}
+{% block content %}
+    <div class="titleBox">
+        <div class="container">
+            <h1 class="big pull-left">{% trans 'Our portfolio' %}</h1>
+        </div>
+    </div>
+    <div class="container">
+        <!-- / wide title -->
+        <div class="row-fluid topSpace">
+            <div class="span12">
+                <ul class="portfolioList col2" id="portfolio1">
+                    {% for item in object_list %}
+
+                    <li>
+                        <div class="easyBox flat doCenter">
+                          <a href="{% url "app:portfolio_detail" pk=item.0.id %}">
+                            <img src={{ item.0.imagecontentclass_set.all.0.image.url }} >
+                            <span class="btn-link btn-block">
+                                {% if LANGUAGE_CODE == 'en' %}
+                                    <h3>{{ item.0.name }}</h3>
+                                {% else %}
+                                    <h3>{{ item.0.nameUA }}</h3>
+                                {% endif %}
+                            </span>
+                            <span class="halflings tag metaText">
+                                <i></i> Branding, Web
+                            </span>
+                          </a>
+                        </div>
+                    </li>
+                    <li>
+                        <div class="easyBox flat doCenter">
+                           <a href="{% url "app:portfolio_detail" pk=item.1.id %}">
+                            <img src={{ item.1.imagecontentclass_set.all.0.image.url }} >
+                             <span class="btn-link btn-block">
+                                {% if LANGUAGE_CODE == 'en' %}
+                                    <h3>{{ item.0.name }}</h3>
+                                {% else %}
+                                    <h3>{{ item.0.nameUA }}</h3>
+                                {% endif %}
+                            </span>
+                            <span class="halflings tag metaText">
+                                <i></i> Branding, Web
+                            </span>
+                            </a>
+                        </div>
+                    </li>
+
+                    {% endfor %}
+                </ul>
+            </div>
+        </div>
+        <!-- /row-fluid -->
+    </div>
+    {% endblock %}

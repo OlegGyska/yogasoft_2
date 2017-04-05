@@ -1,0 +1,88 @@
+{% extends 'base_2.html' %}
+{% load i18n %}
+{% block title %}
+    {% trans "Blog" %}
+{% endblock %}
+
+{% block content %}
+    <div class="titleBox">
+        <div class="container">
+            <h1 class="big pull-left">{% trans 'Testimonials' %}</h1>
+        </div>
+    </div>
+
+    <div class="container">
+    <!-- / wide title -->
+
+        <div class="row-fluid topSpace">
+            <div class="span6">
+                {% for tstm in testimonials.0 %}
+                <div class="bubbleBox">
+                    <blockquote class="easyBox">
+                        <p>
+                            {{ tstm.message }}
+                        </p>
+                    </blockquote>
+                    <span class="pull-right author">{{ tstm.author_name }}
+                        {% if tstm.id == user_tstm_id and tstm.is_moderated == False %}
+                           <span style="color: grey">({% trans "Will be visible after moderation." %})</span>
+                        {% endif %}
+                    </span>
+                </div>
+                {% endfor %}
+            </div>
+
+            <div class="span6">
+               {% for tstm in testimonials.1 %}
+                <div class="bubbleBox">
+                    <blockquote class="easyBox">
+                        <p>
+                            {{ tstm.message }}
+                        </p>
+                    </blockquote>
+                    <span class="pull-right author">{{ tstm.author_name }}
+                        {% if tstm.id == user_tstm_id and tstm.is_moderated == False %}
+                           <span style="color: grey">({% trans "Will be visible after moderation." %})</span>
+                        {% endif %}
+                    </span>
+                </div>
+                {% endfor %}
+            </div>
+
+            <div class="row-fluid">
+                <div class="span12">
+                    <h3 class="twoLines">{% trans "Leave your testimonial" %}</h3>
+                    <form action="{% url 'app:testimonials' %}" method="POST" onsubmit="return confirm({% trans "Save testimonіal?" %})">
+                        {% csrf_token %}
+                       <fieldset>
+                           <div class="row-fluid">
+                               <div class="span4">
+                                   <label class="control-label">{% trans "Author name:" %}</label>
+                                   <input type="text" class="span12"  id="id_author_name" maxlength="100" name="author_name" value="{{ user.first_name }}" required >
+                               </div>
+                               <div class="span4">
+                                   <label>{% trans "Author email:" %}</label>
+                                   <input type="text" class="span12" id="id_author_email" maxlength="254" name="author_email" value="{{ user.email }}" required >
+                               </div>
+                           </div>
+
+                           <div class="row-fluid">
+                               <div class="span8">
+                                   <label>{% trans 'Testimonial:' %}</label>
+                                   <textarea class="span12" cols="40" id="id_message" name="message" rows="7" required></textarea>
+                               </div>
+                           </div>
+
+                           <div class="row-fluid">
+                               <div class="span8">
+                                   <input type="submit" value="{% trans "Save" %}" class="btn btn-primary" name="save">
+                               </div>
+                           </div>
+                       </fieldset>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+{% endblock %}

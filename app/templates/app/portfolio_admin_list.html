@@ -2,7 +2,7 @@
 
 {% block content %}
     <div class="container">
-        <a href="{% url "app:create_portfolio" %}">Create portfolio</a>
+        <a class="btn btn-info wide_btn" href="{% url "app:create_portfolio" %}">Create portfolio</a>
         <hr>
         {% for i in object_list %}
             <div class="row">

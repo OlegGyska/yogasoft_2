@@ -406,3 +406,30 @@ table.permissions_table {
     background-color: #fff;
     border: 1px solid #5bc0de;
 }
+
+@media only screen and (min-width : 768px) {
+    .is-table-row {
+        display: table;
+        margin-top: 20px;
+        margin-bottom: 20px;
+    }
+    .is-table-row [class*="col-"] {
+        float: none;
+        display: table-cell;
+        vertical-align: top;
+    }
+    .is-table-row [class*="well"] {
+        float: none;
+        display: table-cell;
+        vertical-align: top;
+        margin-right: 20px;
+    }
+}
+.prt_margin {
+    margin-top: 20px;
+    margin-bottom: 20px;
+
+}
+.prt_img_limit {
+    max-height: 160px;
+}

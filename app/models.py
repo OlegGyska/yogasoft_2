@@ -13,7 +13,8 @@ class CustomPermission(models.Model):  # Abstract model to add custom permission
             ("user_messages", "Permission to see customer messages"),
             ("admin_users", "Admin users administration"),
             ("general_users", "General users administration"),
-            ("comments_admin", "Comments administration")
+            ("comments_admin", "Comments administration"),
+            ("tags_admin", "Tags administration"),
         )
 
 

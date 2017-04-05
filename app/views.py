@@ -27,6 +27,7 @@ from .models import *
 
 TESTIMONIALS_ON_PAGE = 8
 TESTIMONIALS_ON_ADMIN_PAGE = 8
+TAGS_ON_ADMIN_PAGE = 25
 USERS_ON_PAGE = 25
 CONTACT_US_ON_PAGE = 10
 
@@ -34,6 +35,9 @@ CONTACT_US_ON_PAGE = 10
 # @method_decorator(user_can_decorator(['custom_permission_1']), name='dispatch')  # Decorator use example
 class MainPage(TemplateView):
     template_name = 'base.html'
+
+class AltPage(TemplateView):
+    template_name = 'base_2.html'
 
 
 class LoginPage(TemplateView):
@@ -50,7 +54,7 @@ class StartProjectView(FormView):
 
 class IndexPage(FormView):
     """ View that is responsible for main page """
-    template_name = 'app/index.html'
+    template_name = 'app/2_index.html'
     form_class = StartProjectForm
     success_url = '/'
 
@@ -88,7 +92,7 @@ class IndexPage(FormView):
 class Testimonials(ListView):
     """ View that is responsible for testimonials page """
     model = Testimonial
-    template_name = "app/testimonials.html"
+    template_name = "app/2_testimonials.html"
     paginate_by = TESTIMONIALS_ON_PAGE
     context_object_name = "testimonials"
 
@@ -106,12 +110,20 @@ class Testimonials(ListView):
         return context
 
     def get_queryset(self):
+        def make_it_double(lst):
+            left = []
+            right = []
+            for i, item in enumerate(lst, 1):
+                if i % 2 == 0:
+                    right.append(item)
+                else:
+                    left.append(item)
+            return [left, right]
         if self.request.session.get('user_tstm_id', False):
             tstm_id = int(self.request.session['user_tstm_id'])
-            return Testimonial.objects.filter(Q(is_moderated=True) | Q(id=tstm_id)).order_by('-date')
-        return Testimonial.objects.filter(is_moderated=True).order_by('-date')
+            return make_it_double(Testimonial.objects.filter(Q(is_moderated=True) | Q(id=tstm_id)).order_by('-date'))
+        return make_it_double(Testimonial.objects.filter(is_moderated=True).order_by('-date'))
 
-    @staticmethod
     def post(self, request):
         if 'save' in request.POST:
             if request.session.get('user_tstm_id', False):
@@ -151,7 +163,6 @@ class TestimonialsAdmin(ListView):
         else:
             return Testimonial.objects.order_by('date')  # If not specified get all.
 
-    @staticmethod
     def post(self, request, testimonial_id=None):
         view_moderated = request.GET.get('mod', 'all')
         page = request.GET.get('page', 1)
@@ -193,7 +204,7 @@ class TestimonialsAdmin(ListView):
 class BlogDetailView(DetailView):
     """ View that is responsible for blog page """
     model = BlogPost
-    template_name = 'app/blog.html'
+    template_name = 'app/2_blog_post.html'
 
     def get_context_data(self, **kwargs):
         """ Method that collects all comments for current blog """
@@ -212,6 +223,7 @@ class BlogDetailView(DetailView):
                         context['comments'][i].pop(context['comments'][i].index(j))
         context['form'] = CommentForm()
         context.pop('blogpost')
+        print(context['comments'])
         return context
 
 
@@ -249,7 +261,7 @@ def add_second_comment(request, pk, comm_pk):
 class BlogListView(ListView):
     """ View that is responsible for blog list page """
     model = BlogPost
-    template_name = 'app/BlogList.html'
+    template_name = 'app/2_blog_list.html'
 
     def get_context_data(self, **kwargs):
         context = super(BlogListView, self).get_context_data(**kwargs)
@@ -262,6 +274,31 @@ class BlogListView(ListView):
             return BlogPost.objects.all()
 
 
+class TagsAdmin(ListView):
+    """ Tags view, create, delete on admin page |^OGs^|"""
+    template_name = 'app/tags_admin.html'
+    paginate_by = TAGS_ON_ADMIN_PAGE
+    model = Tag
+    context_object_name = 'tags_obj'
+
+    def post(self, request, tag_id=None):
+        if 'save' in request.POST:
+            new_tag_name = request.POST['tag_name']
+            new_tag = Tag(name=new_tag_name)
+            new_tag.save()
+            return self.get(self)
+
+        elif 'delete' in request.POST:
+            try:
+                tag = Tag.objects.get(pk=tag_id)
+                tag.delete()
+                return self.get(self)
+            except Tag.DoesNotExist:
+                return self.get(self)
+        else:
+            return self.get(self)
+
+
 @login_required
 def user_logout(request):
     logout(request)
@@ -270,7 +307,7 @@ def user_logout(request):
 
 class ContactUsView(FormView):
     """ View that is responsible for feedback page """
-    template_name = 'app/contact_us.html'
+    template_name = 'app/2_contact_us.html'
     form_class = ContactUsForm
     success_url = "/"
 
@@ -425,6 +462,7 @@ class EditAdminUser(TemplateView):
             context['admin_users'] = user_obj.has_perm('app.admin_users')
             context['general_users'] = user_obj.has_perm('app.general_users')
             context['comments_admin'] = user_obj.has_perm('app.comments_admin')
+            context['tags_admin'] = user_obj.has_perm('app.tags_admin')
             context['user_exist'] = True
             context['login_used'] = self.login_used
             self.login_used = False
@@ -458,7 +496,7 @@ class EditAdminUser(TemplateView):
             user_obj.email = request.POST['email']
             perm_list = []
             for perm in ['blog_admin', 'portfolio_admin', 'testimonials_admin', 'projects_admin',
-                         'user_messages', 'admin_users', 'general_users', 'comments_admin']:
+                         'user_messages', 'admin_users', 'general_users', 'comments_admin', 'tags_admin']:
                 if perm in request.POST:
                     perm_list.append(Permission.objects.get(codename=perm))
             user_obj.user_permissions.set(perm_list)
@@ -623,7 +661,7 @@ class EditGeneralUser(TemplateView):  # Edit general user
 
 class PortfolioListView(ListView):
     """02.03.2017 Taras  this list returns all Portfolio projects of our agency """
-    template_name = 'app/portfolio.html'
+    template_name = 'app/2_portfolio_list.html'
 
     # paginate_by = 4
 

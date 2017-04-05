@@ -29,6 +29,10 @@
                                 <td><input class="checkbox checkbox_align" name="blog_admin" type="checkbox" {% if blog_admin %} checked {% endif %}/></td>
                             </tr>
                             <tr class="permissions_table">
+                                <td class="permissions_table"><label>{% trans "Tags administration:" %}</label></td>
+                                <td><input class="checkbox checkbox_align" name="tags_admin" type="checkbox" {% if tags_admin %} checked {% endif %}/></td>
+                            </tr>
+                            <tr class="permissions_table">
                                 <td><label>{% trans "Portfolio administration:" %}</label></td>
                                 <td><input class="checkbox checkbox_align" name="portfolio_admin" type="checkbox" {% if portfolio_admin %} checked {% endif %}/></td>
                             </tr>
@@ -60,10 +64,10 @@
 
                         <div class="row">
                             <div class="col-md-6">
-                               <input type="submit" class="btn btn-success" value="{% trans "Save" %}" name="save">
+                               <input type="submit" class="btn btn-success wide_btn" value="{% trans "Save" %}" name="save">
                             </div>
                             <div class="col-md-6">
-                            <input type="submit" class="btn btn-danger pull-right" value="{% trans "Delete" %}" name="delete">
+                            <input type="submit" class="btn btn-danger pull-right wide_btn" value="{% trans "Delete" %}" name="delete">
                             </div>
                         </div>
                     </form>

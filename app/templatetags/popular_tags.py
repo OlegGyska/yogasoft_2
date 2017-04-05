@@ -4,7 +4,7 @@ from app.models import Tag
 register = Library()
 
 
-@register.inclusion_tag('app/tagcloud.html')
+@register.inclusion_tag('app/2_tagcloud.html')
 def popular_tags():
 
     context = list(Tag.objects.all())

@@ -4,6 +4,7 @@ from . import views
 app_name = 'app'
 urlpatterns = [
     url(r'^$', views.IndexPage.as_view(), name="main_page"),
+    url(r'^alt/$', views.AltPage.as_view(), name="alt"),
 
     url(r'^logout/$', views.user_logout, name='logout'),
     url(r'^registration$', views.register, name="registration"),
@@ -21,7 +22,7 @@ urlpatterns = [
     url(r'^blog/(?P<pk>\d+)/add_comment/(?P<comm_pk>\d+)/$', views.add_second_comment, name='add_second_level_comment'),
     url(r'^blog/(?P<pk>\d+)/$', views.BlogDetailView.as_view(), name='blog_detail_view'),
     url(r'^blog/$', views.BlogListView.as_view(), name='blog_list_view'),
-    url(r'^blog/tag/(?P<tag>[a-zA-Z0-9]+)/$', views.BlogListView.as_view(), name='blog_list_view_tag'),
+    url(r'^blog/tag/(?P<tag>[a-zA-Z0-9 ]+)/$', views.BlogListView.as_view(), name='blog_list_view_tag'),
     url(r'^site_admin/$', views.SiteAdmin.as_view(), name='site_admin'),
     url(r'^site_admin/admin_users/$', views.AdminUsers.as_view(), name='admin_users'),
     url(r'^site_admin/edit_admin_user/(?P<user_id>[0-9]+)/$', views.EditAdminUser.as_view(), name='edit_admin_user'),
@@ -56,4 +57,6 @@ urlpatterns = [
     url(r'^site_admin/comments/delete_sec/(?P<pk>\d+)/$', views.delete_sec_comment, name='comment_admin_delete_sec'),
     url(r'^site_admin/comments/$', views.CommentsAdmin.as_view(), name='comment_admin'),
     url(r'^search_list/(?P<info>.*)$', views.SearchListAsView.as_view(), name='search'),
+    url(r'^site_admin/tags/$', views.TagsAdmin.as_view(), name='tags_admin'),
+    url(r'^site_admin/tags/(?P<tag_id>\d+)/$', views.TagsAdmin.as_view(), name='tags_admin'),
 ]

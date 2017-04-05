@@ -1,0 +1,70 @@
+{% extends 'base_2.html' %}
+{% load i18n %}
+{% block title %}
+    {% trans "Blog" %}
+{% endblock %}
+{% block content %}
+    <div class="titleBox">
+        <div class="container">
+            <h1 class="big pull-left">{% trans 'Our blog' %}</h1>
+        </div>
+    </div>
+    <div class="container">
+    <!-- / wide title -->
+
+
+        <div class="row-fluid topSpace">
+            <div class="span12">
+                <div class="blogContainer">
+                    <!-- blog content -->
+                    {% for i in object_list %}
+
+                    <div class="blogItem">
+                        <div class="bPhoto mediumImage">
+                            <img src="{{ i.blogpostimage_set.all.0.image.url }}" alt=" ">
+                        </div>
+                        <div class="bDescription">
+                            <h3 class="light"><a href="{% url 'app:blog_detail_view' i.id %}">{{ i.name }}</a></h3>
+                            <hr>
+                              <span class="halflings user metaText">
+                                 <i></i>{{ i.author }}
+                              </span>
+                              <span class="halflings calendar metaText">
+                                 <i></i> {{ i.date }}
+                              </span>
+                              <span class="halflings comments metaText">
+                                 <i></i> <a href="#">7 comments</a>
+                              </span>
+                              <span class="halflings tag metaText">
+                                  {% for tag in i.tags.all %}
+                                      <i></i><a href="{% url 'app:blog_list_view_tag' tag=tag.name %}">{{ tag }}</a>
+                                  {% endfor %}
+                             </span>
+                            <hr>
+                                <p>
+                                   Praesent tincidunt accumsan rhoncus.
+                                </p>
+                            <br>
+                            <a href="{% url 'app:blog_detail_view' i.id %}" class="btn btn-primary btn-small">Read More</a>
+                        </div>
+                    </div>
+                    <!-- / blogItem -->
+                    {% endfor %}
+
+                    <!-- pagination, all styles, can be prev, next, active, disabled -->
+                    <div class="pagination pagination-right">
+                        <ul>
+                            <li class="prev"><a href="#">Prev</a></li>
+                            <li><a href="#">1</a></li>
+                            <li class="active"><a href="#">2</a></li>
+                            <li><a href="#">3</a></li>
+                            <li class="next"><a href="#">Next</a></li>
+                        </ul>
+                    </div>
+                    <!-- / blog content -->
+                </div>
+            </div>
+        </div>
+        <!-- / row-fluid -->
+    </div>
+{% endblock %}

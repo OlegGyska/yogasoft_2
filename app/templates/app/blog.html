@@ -28,15 +28,11 @@
                 <h3>{{ object.textUA }}</h3>
             {% endif %}
             <br><br><br>
+
             <div class="container">
             {% for i in comments.items %}
 
-        <br>
-        <p>{{ object.text }}</p>
-        <br><br><br>
-        <div class="container">
-        {% for i in comments.items %}
-        <div class="media">
+           <div class="media">
 
             <div class="media-left">
                 <img src="https://www.w3schools.com/bootstrap/img_avatar1.png" class="media-object" style="width:45px">
@@ -99,6 +95,7 @@
                     </div>
                     <hr>
                 {% endfor %}
+            {% endfor %}
                     <div class="col-lg-4 col-md-4 col-sm-12 col-xm-12">
                         <form method="post" action="{% url "app:add_comment" pk=object.pk %}">
                             {% csrf_token %}
@@ -111,7 +108,7 @@
                         </form>
                     </div>
                 <hr>
-                </div>
+            </div>
         </div>
     </div>
 {% endblock %}
