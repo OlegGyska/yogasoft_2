@@ -18,3 +18,11 @@ def q_transform(request, **kwargs):
     for key, value in kwargs.items():
         updated[key] = value
     return '?' + updated.urlencode()
+
+
+@register.simple_tag()
+def activate(request, *args):
+    current_url = request.path
+    for arg in args:
+        if current_url.find(str(arg)) >= 0:
+            return "active"

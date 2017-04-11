@@ -33,11 +33,11 @@
 
                 <div class="nav-collapse">
                     <ul class="nav navbar-nav pull-right">
-                      <li class="active"><a href="{% url 'app:index_page' %}">{% trans "Home" %}</a></li>
-                      <li><a href="{% url 'app:blog_list_view' %}">{% trans "Blog" %}</a></li>
-                      <li><a href="{% url 'app:portfolio' %}">{% trans "Portfolio" %}</a></li>
-                      <li><a href="{% url 'app:testimonials' %}">{% trans "Testimonials" %}</a></li>
-                      <li><a href="{% url 'app:contact_us' %}" >{% trans "Contact us" %}</a></li>
+                      <li class="{% activate request 'index' %}"><a href="{% url 'app:index_page' %}">{% trans "Home" %}</a></li>
+                      <li class="{% activate request 'blog' %}"><a href="{% url 'app:blog_list_view' %}">{% trans "Blog" %}</a></li>
+                      <li class="{% activate request 'portfolio' %}"><a href="{% url 'app:portfolio' %}">{% trans "Portfolio" %}</a></li>
+                      <li class="{% activate request 'testimonials' %}"><a href="{% url 'app:testimonials' %}">{% trans "Testimonials" %}</a></li>
+                      <li class="{% activate request 'contact_us' %}"><a href="{% url 'app:contact_us' %}" >{% trans "Contact us" %}</a></li>
                       <li class="glyphicon_toolbar"><a href="#" id="search_toggler" ><span class="glyphicons search"><i></i></span></a></li>
                       <li class="glyphicon_toolbar"><a href="#" id="userbar_toggler" >
                           {% if request.user.is_authenticated %}
@@ -68,9 +68,10 @@
 
         <div id="toggled_search" class="navbar-inner bootsnipp-search animate open">
             <div class="container">
-                <form action="http://bootsnipp.com/search" method="GET" role="search">
+                <form role="search">
+                    {% csrf_token %}
                     <div class="input-group">
-                        <input style="display: table-cell" type="text" class="form-control" name="q" placeholder="{% trans 'Search' %}...">
+                        <input id="search" style="display: table-cell" type="text" class="form-control" placeholder="{% trans 'Search' %}...">
                         <span class="input-group-btn" style="display: table-cell">
                             <button id="hide_search" class="btn btn-danger" type="reset"><span class="halflings remove"><i></i></span></button>
                         </span>
@@ -172,6 +173,7 @@
 <script src="{% static "js/ctDrillDown.min.js" %}"></script>
 <script src="{% static "js/jquery.tweet.js" %}"></script>
 <script src="{% static "js/main.js" %}"></script>
+<script src="{% static "js/jquery.custom-file-input.js" %}"></script>
 <script>
 jQuery("#search_toggler").click(function () {
     jQuery("#toggled_search").toggle();
@@ -187,6 +189,29 @@ jQuery("#userbar_toggler").click(function () {
 jQuery("#hide_userbar").click(function () {
     jQuery("#toggled_userbar").hide();
 });
+
+(function(jQuery) {
+    var txt = " click here to start your own project...";
+    var tot = txt.length;
+    var ch  = 0;
+
+    jQuery("#start_proj").hover(
+        function () {
+            this.timer=window.setTimeout(typeIt,500);
+        },
+        function () {
+            if(this.timer)window.clearTimeout(this.timer);
+        });
+    function typeIt() {
+        if(ch > tot) return;
+        jQuery("#start_proj_text").text( txt.substring(0, ch++) );
+        setTimeout(typeIt, ~~(Math.random()*(300-60+1)+60));
+    }
+    jQuery("#start_proj").click(function () {
+        console.log("step 1");
+        jQuery("#SP_Modal").modal("toggle");
+    });
+})(jQuery);
 </script>
 
 </body>

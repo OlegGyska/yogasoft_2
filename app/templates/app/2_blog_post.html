@@ -30,7 +30,7 @@
                                   <i></i>{{ object.date }}
                                 </span>
                                 <span class="halflings comments metaText">
-                                  <i></i> <a href="#">{{ comments|length }} comments</a>
+                                  <i></i> <a href="#">{{ comments_cnt }} comments</a>
                                 </span>
                                 <span class="halflings tag metaText">
                                     <i></i>
@@ -61,7 +61,7 @@
                                    <li>
                                        <img src="https://www.w3schools.com/bootstrap/img_avatar1.png" class="avatar" alt="" width="65px">
                                        <span class="author">{{ comment.0.author_name }}</span>
-                                       <span class="date">{{ comment.0.time }} | <button data-toggle="collapse" data-target="#sec_lvl_{{ comment.0.id }}"></button> <a href="#" >Reply</a></span>
+                                       <span class="date">{{ comment.0.time }} | <button class="reply_btn" data-toggle="collapse" data-target="#sec_lvl_{{ comment.0.id }}">{% trans 'reply' %}</button></span>
                                        <p>
                                            {{ comment.0.message }}
                                        </p>
@@ -92,7 +92,7 @@
                                                        </div>
                                                        <div class="row-fluid">
                                                            <div class="span12">
-                                                               <input type="submit" value="{% trans 'Add comment' %}" class="btn btn-small btn-primary">
+                                                               <input type="submit" value="{% trans 'Add comment' %}" class="custom_button blue">
                                                            </div>
                                                        </div>
                                                    </fieldset>
@@ -145,7 +145,7 @@
 
                                     <div class="row-fluid">
                                         <div class="span12">
-                                            <input type="submit" value="{% trans 'Add comment' %}" class="btn btn-small btn-primary">
+                                            <input type="submit" value="{% trans 'Add comment' %}" class="custom_button blue">
                                         </div>
                                     </div>
                                 </fieldset>

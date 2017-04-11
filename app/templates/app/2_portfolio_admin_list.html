@@ -1,0 +1,45 @@
+{% extends 'base_2.html' %}
+{% load i18n %}
+{% block title %}
+    {% trans "Blog" %}
+{% endblock %}
+{% block content %}
+    <div class="titleBox">
+        <div class="container">
+            <h1 class="big pull-left">{% trans 'Portfolio administration' %}</h1>
+        </div>
+    </div>
+    <div class="container">
+        <div class="row-fluid topSpace">
+            <div class="span5">
+                <ul class="admin_menu">
+                    <li><a href="{% url "app:create_portfolio" %}"><span class="halflings plus"><i></i></span> Create portfolio</a></li>
+                </ul>
+            </div>
+        </div>
+        <div class="row-fluid topSpace">
+            <div class="blogContainer">
+                {% for i in object_list %}
+                    <div class="blogItem admin_portfolio_list">
+                        <div class="bPhoto mediumImage"><img src="{{ i.imagecontentclass_set.all.0.image.url }}"></div>
+                        <div class="bDescription fix">
+                            <h3 class="light"><a href="{% url 'app:portfolio_detail' pk=i.id %}">{{ i.name }}</a></h3>
+                            <hr>
+                            <span class="halflings tag metaText">
+                                {% for tag in i.tags.all %}
+                                    <i></i><a href="{% url 'app:blog_list_view_tag' tag=tag.name %}">{{ tag }}</a>
+                                {% endfor %}
+                            </span>
+                            <hr>
+                            <form method="post" action="{% url "app:portfolio_admin_list" i.id %}" onsubmit="return confirm('{% trans 'Delete portfolio' %}?')">
+                                {% csrf_token %}
+                                <a class="custom_button blue small" href="{% url 'app:change_portfolio' pk=i.id %}">{% trans 'Change portfolio' %}</a>
+                                <input type="submit" name="delete" value="{% trans 'Delete portfolio' %}" class="custom_button red small">
+                            </form>
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+{% endblock %}

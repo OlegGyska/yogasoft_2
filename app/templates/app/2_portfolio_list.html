@@ -19,7 +19,10 @@
                     <li>
                         <div class="easyBox flat doCenter">
                           <a href="{% url "app:portfolio_detail" pk=item.0.id %}">
-                            <img src={{ item.0.imagecontentclass_set.all.0.image.url }} >
+                            <div style="width: 100%; height: 200px">
+                                <img src={{ item.0.imagecontentclass_set.all.0.image.url }}>
+                            </div>
+
                             <span class="btn-link btn-block">
                                 {% if LANGUAGE_CODE == 'en' %}
                                     <h3>{{ item.0.name }}</h3>
