@@ -12,7 +12,7 @@ from django.contrib.auth.models import Permission, User
 from django.utils.decorators import method_decorator
 from django.http import StreamingHttpResponse, HttpResponseRedirect, request
 from django.template import RequestContext
-from django.core.urlresolvers import reverse
+from django.core.urlresolvers import reverse, reverse_lazy
 from django.db.models import Q
 from django.shortcuts import redirect, render, render_to_response
 from shutil import rmtree
@@ -26,6 +26,7 @@ from .forms import *
 from .models import *
 
 TESTIMONIALS_ON_PAGE = 8
+BLOG_POSTS_ON_PAGE = 8
 TESTIMONIALS_ON_ADMIN_PAGE = 8
 TAGS_ON_ADMIN_PAGE = 25
 USERS_ON_PAGE = 25
@@ -36,8 +37,9 @@ CONTACT_US_ON_PAGE = 10
 class MainPage(TemplateView):
     template_name = 'base.html'
 
+
 class AltPage(TemplateView):
-    template_name = 'base_2.html'
+    template_name = 'app/index.html'
 
 
 class LoginPage(TemplateView):
@@ -142,7 +144,7 @@ class Testimonials(ListView):
 @method_decorator(user_can_decorator(['testimonials_admin']), name='dispatch')
 class TestimonialsAdmin(ListView):
     model = Testimonial
-    template_name = "app/testimonials_admin.html"
+    template_name = "app/2_testimonials_admin.html"
     paginate_by = TESTIMONIALS_ON_ADMIN_PAGE
     context_object_name = "testimonials"
 
@@ -216,14 +218,12 @@ class BlogDetailView(DetailView):
         for i in comments:
             if i.is_moderated:
                 context['comments'][i] = list(CommentSecondLevel.objects.filter(father_comment=i))
-                print(CommentSecondLevel.objects.filter(id=1))
-                print('*'*50)
                 for j in context['comments'][i]:
                     if not j.is_moderated:
                         context['comments'][i].pop(context['comments'][i].index(j))
         context['form'] = CommentForm()
         context.pop('blogpost')
-        print(context['comments'])
+        context['comments_cnt'] = count_comments(bp_objects=[blog_post])
         return context
 
 
@@ -262,9 +262,19 @@ class BlogListView(ListView):
     """ View that is responsible for blog list page """
     model = BlogPost
     template_name = 'app/2_blog_list.html'
+    context_object_name = 'blog_posts'
+    paginate_by = BLOG_POSTS_ON_PAGE
 
     def get_context_data(self, **kwargs):
         context = super(BlogListView, self).get_context_data(**kwargs)
+        posts_combined = []
+        for post in context['blog_posts']:
+            comments = count_comments(bp_objects=[post])
+            preview_text = {'en': post.text[:300]+'...' if len(post.text) > 300 else post.text,
+                            'uk': post.textUA[:300] + '...' if len(post.textUA) > 300 else post.textUA,
+                            }
+            posts_combined.append([post, comments, preview_text])
+        context['blog_posts'] = posts_combined
         return context
 
     def get_queryset(self):
@@ -274,9 +284,31 @@ class BlogListView(ListView):
             return BlogPost.objects.all()
 
 
+def count_comments(id_list=None, bp_objects=None):  # Function to count total comments in blog post(s) ^OGs^
+    def count_per_post(bp_object):
+        if bp_object is None:
+            return 0
+        comments = bp_object.comment_set.filter(is_moderated=True)
+        total = len(comments)
+        for comment in comments:
+            total += len(CommentSecondLevel.objects.filter(Q(father_comment=comment), Q(is_moderated=True)))
+        return total
+    if bp_objects is None:
+        bp_objects = []
+        for bid in id_list:
+            try:
+                bp_objects.append(BlogPost.objects.get(bid))
+            except BlogPost.DoesNotExist:
+                bp_objects.append(None)
+    total_comments = 0
+    for bp_object in bp_objects:
+        total_comments += count_per_post(bp_object)
+    return total_comments
+
+
 class TagsAdmin(ListView):
     """ Tags view, create, delete on admin page |^OGs^|"""
-    template_name = 'app/tags_admin.html'
+    template_name = 'app/2_tags_admin.html'
     paginate_by = TAGS_ON_ADMIN_PAGE
     model = Tag
     context_object_name = 'tags_obj'
@@ -354,7 +386,7 @@ class ContactUsSuccess(TemplateView):
 
 @method_decorator(user_can_decorator(['user_messages']), name='dispatch')
 class ContactUsAdmin(ListView):
-    template_name = 'app/contact_us_admin.html'
+    template_name = 'app/2_contact_us_admin.html'
     paginate_by = CONTACT_US_ON_PAGE
     model = ContactUsModel
     context_object_name = 'cu_requests'
@@ -391,7 +423,7 @@ def user_login(request):
 
 
 class SiteAdmin(TemplateView):
-    template_name = 'app/site_admin.html'
+    template_name = 'app/2_site_admin.html'
 
     def get_context_data(self, **kwargs):
         context = dict()
@@ -406,7 +438,7 @@ class SiteAdmin(TemplateView):
 @method_decorator(user_can_decorator(['admin_users']), name='dispatch')
 class AdminUsers(ListView):
     model = User
-    template_name = "app/admin_users.html"
+    template_name = "app/2_admin_users.html"
     context_object_name = "users"
 
     def __init__(self, **kwargs):
@@ -442,7 +474,7 @@ class AdminUsers(ListView):
 @method_decorator(user_can_decorator(['admin_users']), name='dispatch')
 class EditAdminUser(TemplateView):
     model = User
-    template_name = "app/edit_admin_user.html"
+    template_name = "app/2_edit_admin_user.html"
     context_object_name = "user_obj"
 
     def __init__(self, **kwargs):
@@ -509,7 +541,7 @@ class EditAdminUser(TemplateView):
 @method_decorator(user_can_decorator(['general_users']), name='dispatch')
 class GeneralUsers(ListView):  # View and fast create general user
     model = User
-    template_name = "app/general_users.html"
+    template_name = "app/2_general_users.html"
     context_object_name = "users"
     paginate_by = USERS_ON_PAGE
 
@@ -582,7 +614,7 @@ class GeneralUsers(ListView):  # View and fast create general user
 
         return User.objects.filter(reduce(__and__, q_builder)).order_by(order_by)
 
-    @staticmethod
+
     def post(self, request):
         if 'save' in request.POST:
             new_user = request.POST['username']
@@ -610,7 +642,7 @@ class GeneralUsers(ListView):  # View and fast create general user
 @method_decorator(user_can_decorator(['general_users']), name='dispatch')
 class EditGeneralUser(TemplateView):  # Edit general user
     model = User
-    template_name = "app/edit_general_user.html"
+    template_name = "app/2_edit_general_user.html"
     context_object_name = "user_obj"
 
     def __init__(self, **kwargs):
@@ -710,14 +742,25 @@ def register(request):  # 06.03.2017 Taras need to edit later
 @method_decorator(user_can_decorator(['blog_admin']), name='dispatch')
 class AdminBlogList(ListView):
     model = BlogPost
-    template_name = 'app/admin_blog_list.html'
+    template_name = 'app/2_blog_admin_list.html'
+
+    def post(self, request, pk=None):
+        if 'delete' in request.POST:
+            try:
+                blog_obj = BlogPost.objects.get(pk=pk)
+            except PortfolioContent.DoesNotExist:
+                return redirect(reverse('app:admin_blog_posts'))
+            blog_obj.delete()
+            return redirect(reverse('app:admin_blog_posts'))
+        else:
+            return redirect(reverse('app:admin_blog_posts'))
 
 
 @method_decorator(user_can_decorator(['blog_admin']), name='dispatch')
 class CreateBlogPost(CreateView):
     model = BlogPost
     form_class = CreateBlogForm
-    template_name = "app/create_blog_post.html"
+    template_name = "app/2_create_blog_post.html"
 
     def post(self, request, *args, **kwargs):
         data = request.POST
@@ -731,15 +774,16 @@ class CreateBlogPost(CreateView):
         for i in request.FILES.getlist('file'):
             img = BlogPostImage(image=i, content=q)
             img.save()
-        return redirect("/")
+        return redirect(reverse('app:admin_blog_posts'))
 
 
 @method_decorator(user_can_decorator(['blog_admin']), name='dispatch')
 class ChangeBlogPost(UpdateView):
     model = BlogPost
     fields = ['text', 'textUA', 'tags']
-    template_name = "app/blog_update.html"
-    success_url = "/"
+    template_name = "app/2_edit_blog_post.html"
+    success_url = reverse_lazy('app:admin_blog_posts')
+    context_object_name = 'post'
 
 
 @method_decorator(user_can_decorator(['blog_admin']), name='dispatch')
@@ -752,13 +796,14 @@ class BlogPostDelete(DeleteView):
 @method_decorator(user_can_decorator(['projects_admin']), name='dispatch')
 class ProjectsListView(ListView):
     model = Project
-    template_name = "app/projects_list.html"
+    template_name = "app/2_projects_list.html"
+    paginate_by = 30
 
 
 @method_decorator(user_can_decorator(['projects_admin']), name='dispatch')
 class ProjectDetailView(DetailView):
     model = Project
-    template_name = "app/project_view.html"
+    template_name = "app/2_project_view.html"
 
     def get_context_data(self, **kwargs):
         """
@@ -839,31 +884,47 @@ def close_project(request, pk):
     return HttpResponseRedirect(request.META['HTTP_REFERER'])
 
 
-class SearchListAsView(ListView):
+class SearchListAsView(TemplateView):
     """ this class is responsible for search
 
     It searchs blog posts on info that user inputs, It uses Ajax queries
     """
-    template_name = 'app/ajax_list_view.html'
-    model = BlogPost
+    template_name = 'app/2_ajax_list_view.html'
 
     def get_context_data(self, **kwargs):
-        context = super(SearchListAsView, self).get_context_data(**kwargs)
-        # here we can add some additional context
-        context.update({
-            'tag_list': None,
-        })
+        context = {}
+        query = self.kwargs['info']
+        if len(query) < 3:
+            return context
+        found = False
+        blog_posts = BlogPost.objects.filter(Q(name__contains=query) | Q(nameUA__contains=query) |
+                                             Q(text__contains=query) | Q(textUA__contains=query))[:15]
+        context["blog_posts"] = blog_posts
+        portfolio = PortfolioContent.objects.filter(Q(name__contains=query) | Q(nameUA__contains=query) |
+                                                    Q(description__contains=query) | Q(descriptionUA__contains=query))
+        context["portfolios"] = portfolio
+        if len(blog_posts) > 0 or len(portfolio) > 0:
+            found = True
+        context["found"] = found
         return context
 
-    def get_queryset(self):
-        return BlogPost.objects.filter(Q(name__contains=self.kwargs['info']) | Q(text__contains=self.kwargs['info']))
+    #def get_context_data(self, **kwargs):
+    #    context = super(SearchListAsView, self).get_context_data(**kwargs)
+    #    # here we can add some additional context
+    #    context.update({
+    #        'tag_list': None,
+    #    })
+    #    return context
+
+    #def get_queryset(self):
+    #    return BlogPost.objects.filter(Q(name__contains=self.kwargs['info']) | Q(text__contains=self.kwargs['info']))
 
 
 @method_decorator(user_can_decorator(['portfolio_admin']), name='dispatch')
 class CreatePortfolio(CreateView):
     model = PortfolioContent
     form_class = CreatePortfolio
-    template_name = "app/create_portfolio.html"
+    template_name = "app/2_create_portfolio.html"
 
     def post(self, request, *args, **kwargs):
 
@@ -879,19 +940,30 @@ class CreatePortfolio(CreateView):
         for i in request.FILES.getlist('file'):
             img = ImageContentClass(image=i, content=q)
             img.save()
-        return redirect("/")
+        return redirect(reverse('app:portfolio_admin_list'))
 
 
 @method_decorator(user_can_decorator(['portfolio_admin']), name='dispatch')
 class PortfolioAdminList(ListView):
     model = PortfolioContent
-    template_name = "app/portfolio_admin_list.html"
+    template_name = "app/2_portfolio_admin_list.html"
+
+    def post(self, request, pk=None):
+        if 'delete' in request.POST:
+            try:
+                portfolio_obj = PortfolioContent.objects.get(pk=pk)
+            except PortfolioContent.DoesNotExist:
+                return redirect(reverse('app:portfolio_admin_list'))
+            portfolio_obj.delete()
+            return redirect(reverse('app:portfolio_admin_list'))
+        else:
+            return redirect(reverse('app:portfolio_admin_list'))
 
 
 @method_decorator(user_can_decorator(['portfolio_admin']), name='dispatch')
 class PortfolioDelete(DeleteView):
     model = PortfolioContent
-    success_url = '/'
+    success_url = reverse_lazy('app:portfolio_admin_list')
     template_name = "app/confirm_delete.html"
 
 
@@ -899,14 +971,15 @@ class PortfolioDelete(DeleteView):
 class ChangePortfolio(UpdateView):
     UpdateView.model = PortfolioContent
     UpdateView.fields = ['name', 'nameUA', 'description', 'descriptionUA', 'tags', "technologies", 'link', 'client']
-    UpdateView.template_name = "app/portfolio_update.html"
-    success_url = "/"
+    UpdateView.template_name = "app/2_edit_portfolio.html"
+    success_url = reverse_lazy('app:portfolio_admin_list')
+    context_object_name = 'portfolio'
 
 
 @method_decorator(user_can_decorator(['comments_admin']), name='dispatch')
 class CommentsAdmin(ListView):
     model = Comment
-    template_name = 'app/comments_admin.html'
+    template_name = 'app/2_comments_admin.html'
     context_object_name = 'comments'
     paginate_by = 10
 

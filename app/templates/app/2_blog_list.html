@@ -1,5 +1,6 @@
 {% extends 'base_2.html' %}
 {% load i18n %}
+{% load popular_tags %}
 {% block title %}
     {% trans "Blog" %}
 {% endblock %}
@@ -17,50 +18,58 @@
             <div class="span12">
                 <div class="blogContainer">
                     <!-- blog content -->
-                    {% for i in object_list %}
+                    {% for i in blog_posts %}
 
                     <div class="blogItem">
                         <div class="bPhoto mediumImage">
-                            <img src="{{ i.blogpostimage_set.all.0.image.url }}" alt=" ">
+                            <img src="{{ i.0.blogpostimage_set.all.0.image.url }}" alt=" ">
                         </div>
-                        <div class="bDescription">
-                            <h3 class="light"><a href="{% url 'app:blog_detail_view' i.id %}">{{ i.name }}</a></h3>
+                        <div class="bDescription fix" style="">
+                            <h3 class="light"><a href="{% url 'app:blog_detail_view' i.0.id %}">{{ i.0.name }}</a></h3>
                             <hr>
                               <span class="halflings user metaText">
-                                 <i></i>{{ i.author }}
+                                 <i></i>{{ i.0.author }}
                               </span>
                               <span class="halflings calendar metaText">
-                                 <i></i> {{ i.date }}
+                                 <i></i> {{ i.0.date }}
                               </span>
                               <span class="halflings comments metaText">
-                                 <i></i> <a href="#">7 comments</a>
+                                 <i></i> <a href="#">{{ i.1 }} comments</a>
                               </span>
                               <span class="halflings tag metaText">
-                                  {% for tag in i.tags.all %}
+                                  {% for tag in i.0.tags.all %}
                                       <i></i><a href="{% url 'app:blog_list_view_tag' tag=tag.name %}">{{ tag }}</a>
                                   {% endfor %}
                              </span>
                             <hr>
                                 <p>
-                                   Praesent tincidunt accumsan rhoncus.
+                                    {% if LANGUAGE_CODE == 'en' %}
+                                        {{ i.2.en }}
+                                    {% else %}
+                                        {{ i.2.uk }}
+                                    {% endif %}
                                 </p>
                             <br>
-                            <a href="{% url 'app:blog_detail_view' i.id %}" class="btn btn-primary btn-small">Read More</a>
+                            <a href="{% url 'app:blog_detail_view' i.0.id %}" class="custom_button blue">Read More</a>
                         </div>
                     </div>
                     <!-- / blogItem -->
                     {% endfor %}
-
-                    <!-- pagination, all styles, can be prev, next, active, disabled -->
-                    <div class="pagination pagination-right">
-                        <ul>
-                            <li class="prev"><a href="#">Prev</a></li>
-                            <li><a href="#">1</a></li>
-                            <li class="active"><a href="#">2</a></li>
-                            <li><a href="#">3</a></li>
-                            <li class="next"><a href="#">Next</a></li>
-                        </ul>
-                    </div>
+                    {%  if page_obj.paginator.num_pages > 1 %}
+                        <div class="custom_pagination">
+                            <span class="text">Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}&nbsp|&nbsp</span>
+                            {% if page_obj.has_previous %}
+                                <a href="{% url 'app:blog_list_view' %}{% q_transform request page=page_obj.previous_page_number %}">{% trans 'Previous' %}</a>
+                            {% else %}
+                                <span class="disabled">{% trans 'Previous' %}</span>
+                            {% endif %}
+                            {% if page_obj.has_next %}
+                                <a href="{% url 'app:blog_list_view' %}{% q_transform request page=page_obj.next_page_number %}">{% trans 'Next' %}</a>
+                            {% else %}
+                                <span class="disabled">{% trans 'Next' %}</span>
+                            {% endif %}
+                        </div>
+                    {% endif %}
                     <!-- / blog content -->
                 </div>
             </div>

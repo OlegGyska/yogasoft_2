@@ -1,0 +1,51 @@
+{% extends 'base_2.html' %}
+{% load i18n %}
+{% block title %}
+    {% trans "Blog" %}
+{% endblock %}
+{% block content %}
+    <div class="titleBox">
+        <div class="container">
+            <h1 class="big pull-left">{% trans 'Blog administration' %}</h1>
+        </div>
+    </div>
+    <div class="container">
+        <div class="row-fluid topSpace">
+            <div class="span5">
+                <ul class="admin_menu">
+                    <li><a href="{% url "app:create_blog_post" %}"><span class="halflings plus"><i></i></span> {% trans "Create new post" %}</a></li>
+                </ul>
+            </div>
+        </div>
+        <div class="row-fluid topSpace">
+            <div class="blogContainer">
+                {% for i in object_list %}
+                    <div class="blogItem admin_portfolio_list">
+                        <div class="bPhoto mediumImage"><img src="{{ i.blogpostimage_set.all.0.image.url }}"></div>
+                        <div class="bDescription fix">
+                            <h3 class="light"><a href="{% url 'app:blog_detail_view' i.id %}">{{ i.name }}</a></h3>
+                            <hr>
+                            <span class="halflings user metaText">
+                                <i></i>{{ i.author }}
+                            </span>
+                            <span class="halflings calendar metaText">
+                                <i></i> {{ i.date }}
+                            </span>
+                            <span class="halflings tag metaText">
+                                {% for tag in i.tags.all %}
+                                    <i></i><a href="{% url 'app:blog_list_view_tag' tag=tag.name %}">{{ tag }}</a>
+                                {% endfor %}
+                            </span>
+                            <hr>
+                            <form method="post" action="{% url "app:admin_blog_posts" i.id %}" onsubmit="return confirm('{% trans 'Delete post' %}?')">
+                                {% csrf_token %}
+                                <a class="custom_button blue small" href="{% url 'app:change_blog_post' pk=i.id %}">{% trans "Change post" %}</a>
+                                <input type="submit" name="delete" value="{% trans "Delete post" %}" class="custom_button red small">
+                            </form>
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+{% endblock %}

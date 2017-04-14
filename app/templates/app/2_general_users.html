@@ -1,0 +1,121 @@
+{% extends 'base_2.html' %}
+{% load i18n %}
+{% load popular_tags %}
+{% block title %}
+    {% trans "Blog" %}
+{% endblock %}
+{% block content %}
+    <div class="titleBox">
+        <div class="container">
+            <h1 class="big pull-left">{% trans "Users administration" %}</h1>
+        </div>
+    </div>
+    <div class="container">
+        <div class="row-fluid topSpace">
+            <div class="span12">
+
+                <div class="navbar navbar-static-top admin_navbar"> <!-- TODO: fix this f***n toolbar -->
+                    <div class="navbar-inner">
+                        <span class="an_text">{% trans "Register type:" %}</span>
+                        <ul class="an_dropdown">
+                            <li class="dropdown">
+                              <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">{% trans register_type_tag %}<span class="caret"></span></a>
+                              <ul class="dropdown-menu">
+                                <li><a href="{% url 'app:general_users' %}{% q_transform request auth_by_sn='true' %}">{% trans "By social network" %}</a></li>
+                                <li><a href="{% url 'app:general_users' %}{% q_transform request auth_by_sn='false' %}">{% trans "By login/password" %}</a></li>
+                                <li><a href="{% url 'app:general_users' %}{% q_transform request auth_by_sn='all' %}">{% trans "All" %}</a></li>
+                              </ul>
+                            </li>
+                        </ul>
+                        <span class="an_text">{% trans "Register type:" %}</span>
+                        <ul class="an_dropdown">
+                            <li class="dropdown">
+                              <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">{% trans activity_tag %}<span class="caret"></span></a>
+                              <ul class="dropdown-menu">
+                                <li><a href="{% url 'app:general_users' %}{% q_transform request is_active='true' %}">{% trans "Active users" %}</a></li>
+                                <li><a href="{% url 'app:general_users' %}{% q_transform request is_active='false'%}">{% trans "Inactive users" %}</a></li>
+                                <li><a href="{% url 'app:general_users' %}{% q_transform request is_active='all'%}">{% trans "All" %}</a></li>
+                              </ul>
+                            </li>
+                        </ul>
+                        <div class="pull-right">
+
+                            <form class="an_form" action="{% url 'app:general_users'%}" method="POST">
+                                {% csrf_token %}
+                                <input type="text" class="form-control" placeholder={% trans "Search" %} name="search_q" maxlength="30" required>
+                                <button class="custom_button blue na_search" type="submit" name="search">
+                                    <span class="glyphicons search"><i></i></span>
+                                </button>
+                            </form>
+                            <form class="an_form" action="{% url 'app:general_users'%}" method="POST">
+                                {% csrf_token %}
+                                <input class="custom_button blue" type="submit" name="reset" value="{% trans "Reset" %}">
+                            </form>
+                        </div>
+                    </div>
+                    <div class="navbar-inner">
+                        <span class="an_text">{% trans "Order by:" %}</span>
+                        <ul class="an_dropdown">
+                            <li class="dropdown">
+                              <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">{% trans order_by_tag %}<span class="caret"></span></a>
+                              <ul class="dropdown-menu">
+                                <li><a href="{% url 'app:general_users' %}{% q_transform request order_by='username' %}">{% trans "Username" %}</a></li>
+                                <li><a href="{% url 'app:general_users' %}{% q_transform request order_by='first_name' %}">{% trans "First name" %}</a></li>
+                                <li><a href="{% url 'app:general_users' %}{% q_transform request order_by='last_name' %}">{% trans "Last name" %}</a></li>
+                              </ul>
+                            </li>
+                        </ul>
+                        <a class="an_button {% if order_desc_cond == 'false' %}active{% endif %}" href="{% url 'app:general_users' %}{% q_transform request order_desc='false' %}"><span class="halflings sort-by-attributes"><i></i></span></a>
+                        <a class="an_button {% if order_desc_cond == 'true' %}active{% endif %}" href="{% url 'app:general_users' %}{% q_transform request order_desc='true' %}"><span class="halflings sort-by-attributes-alt"><i></i></span></a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row-fluid topSpace">
+            <div class="span12">
+                {% if no_found %}
+                    <h3 style="color: red">{% trans "No users found" %}</h3>
+                {% endif %}
+                {% if login_used %}
+                    <h3 style="color: red">{% trans "Login is already used" %}</h3>
+                {% endif %}
+                <table class="admin_table">
+                    <tr class="header">
+                        <td>{% trans "User ID" %}</td>
+                        <td>{% trans "Username" %}</td>
+                        <td>{% trans "First name" %}</td>
+                        <td>{% trans "Last name" %}</td>
+                        <td>{% trans "Email" %}</td>
+                        <td></td>
+                    </tr>
+                    {% for user_obj in users %}
+                        <tr>
+                            <td class="span1">{{ user_obj.id }}</td>
+                            <td>{{ user_obj.username }}</td>
+                            <td>{{ user_obj.first_name }}</td>
+                            <td>{{ user_obj.last_name }}</td>
+                            <td>{{ user_obj.email }}</td>
+                            <td><a class="custom_button blue table_btn pull-right" href="{% url 'app:edit_general_user' user_obj.pk%}">{% trans "Edit" %}</a></td>
+                        </tr>
+                    {% endfor %}
+                </table>
+            </div>
+        </div>
+
+        <div class="row-fluid topSpace">
+            <div class="span12">
+                <h3 class="twoLines">{% trans "Add user" %}</h3>
+            </div>
+        </div>
+        <div class="row">
+            <div class="span4">
+                <form action="{% url 'app:general_users' %}" method="POST" onsubmit="return confirm('{% trans "Save user?" %}')">
+                    {% csrf_token %}
+                    <p><label>{% trans "Username:" %}</label><input class="form-control wide"  maxlength="25" name="username" type="text" required /></p>
+                    <p><label>{% trans "Password:" %}</label><input class="form-control wide"  minlength="4" maxlength="30" name="password" type="password" required /></p>
+                    <input type="submit" class="custom_button blue big" value="{% trans "Save" %}" name="save">
+                </form>
+            </div>
+        </div>
+    </div>
+{% endblock %}

@@ -1,0 +1,108 @@
+{% extends 'base_2.html' %}
+{% load i18n %}
+{% load popular_tags %}
+{% block title %}
+    {% trans "Blog" %}
+{% endblock %}
+{% block content %}
+    <div class="titleBox">
+        <div class="container">
+            <h1 class="big pull-left">{% trans "Edit administrator" %}</h1>
+        </div>
+    </div>
+    <div class="container">
+
+        {% if user_exist %}
+            <div class="row-fluid topSpace">
+                <div class="span12">
+                    <form action="{% url 'app:edit_admin_user' user_obj.id %}" method="POST" onsubmit="return confirm('{% trans "Save user?" %}')">
+                        <div class="row-fluid">
+                            <div class="span4">
+                                {% csrf_token %}
+                                {% if login_used %}
+                                    <h3 style="color: red">Login is already used</h3>  <!-- TODO resize checkbox -->
+                                {% endif %}
+                                <p><label>{% trans "Username:" %}</label><input class="form-control wide"  maxlength="30" name="username" type="text" value="{{ user_obj.username }}" required /></p>
+                                <p><label>{% trans "First name:" %}</label><input class="form-control wide" maxlength="30" name="first_name" type="text" value="{{ user_obj.first_name }}"/></p>
+                                <p><label>{% trans "Last name:" %}</label><input class="form-control wide" maxlength="30" name="last_name" type="text" value="{{ user_obj.last_name }}"/></p>
+                                <p><label>{% trans "Email:" %}</label><input class="form-control wide"  maxlength="30" name="email" type="email" value="{{ user_obj.email }}"/></p>
+
+                                <table class="permissions_table">
+                                    <tr>
+                                        <td>
+                                            <input class="custom_checkbox" name="blog_admin" type="checkbox" id="blog_admin" {% if blog_admin %} checked {% endif %}/><label for="blog_admin"></label><span class="custom_checkbox">{% trans "Blog administration" %}</span>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            <input class="custom_checkbox" name="tags_admin" type="checkbox" id="tags_admin" {% if tags_admin %} checked {% endif %}/><label for="tags_admin"></label><span class="custom_checkbox">{% trans "Tags administration" %}</span>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            <input class="custom_checkbox" name="portfolio_admin" type="checkbox" id="portfolio_admin" {% if portfolio_admin %} checked {% endif %}/><label for="portfolio_admin"></label><span class="custom_checkbox">{% trans "Portfolio administration" %}</span>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            <input class="custom_checkbox" name="testimonials_admin" type="checkbox" id="testim_admin" {% if testimonials_admin %} checked {% endif %}/><label for="testim_admin"></label><span class="custom_checkbox">{% trans "Testimonials administration" %}</span>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            <input class="custom_checkbox" name="projects_admin" type="checkbox" id="projects_admin" {% if projects_admin %} checked {% endif %}/><label for="projects_admin"></label><span class="custom_checkbox">{% trans "Project administration" %}</span>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            <input class="custom_checkbox" name="user_messages" type="checkbox" id="user_messages" {% if user_messages %} checked {% endif %}/><label for="user_messages"></label><span class="custom_checkbox">{% trans "Feedback administration" %}</span>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            <input class="custom_checkbox" name="comments_admin" type="checkbox" id="comments_admin" {% if comments_admin %} checked {% endif %}/><label for="comments_admin"></label><span class="custom_checkbox">{% trans "Comments administration" %}</span>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            <input class="custom_checkbox" name="admin_users" type="checkbox" id="admin_users" {% if admin_users %} checked {% endif %}/><label for="admin_users"></label><span class="custom_checkbox">{% trans "Administrator users" %}</span>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            <input class="custom_checkbox" name="general_users" type="checkbox" id="general_users" {% if general_users %} checked {% endif %}/><label for="general_users"></label><span class="custom_checkbox">{% trans "General users" %}</span>
+                                        </td>
+                                    </tr>
+                               </table>
+                            </div>
+                        </div>
+                        <div class="row-fluid">
+                            <div class="span4">
+                               <input type="submit" class="custom_button blue big" value="{% trans "Save" %}" name="save">
+                            </div>
+                            <div class="span4">
+                                <input type="submit" class="custom_button red big pull-right" value="{% trans "Delete" %}" name="delete">
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+            <div class="row-fluid topSpace">
+                <div class="span12">
+                    <h3 class="twoLines">{% trans "Change password" %}</h3>
+                </div>
+            </div>
+            <div class="row-fluid">
+                <div class="span4">
+                    <form action="{% url 'app:edit_admin_user' user_obj.id %}" method="POST" onsubmit="return confirm('{% trans "Save password?" %}')">
+                        {% csrf_token %}
+                        <p><label>{% trans "New password:" %}</label><input class="form-control wide"  minlength="4" maxlength="30" name="password" type="password" required /></p>
+                        <input type="submit" class="custom_button blue" value="{% trans "Change password" %}" name="change_pass">
+                    </form>
+                </div>
+            </div>
+        {% else %}
+            <h1>User does not exist or wrong user id <a href="{% url 'app:admin_users' %}">back</a></h1>
+        {% endif %}
+    </div>
+{% endblock %}

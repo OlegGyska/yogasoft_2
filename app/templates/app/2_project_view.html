@@ -1,0 +1,46 @@
+{% extends 'base_2.html' %}
+{% load i18n %}
+{% load popular_tags %}
+{% block content %}
+    <div class="titleBox">
+        <div class="container">
+            <h1 class="big pull-left">{% trans 'Project view' %}</h1>
+        </div>
+    </div>
+    <div class="container" style="min-height: 500px">
+        <div class="row-fluid topSpace">
+            <div class="span12">
+                <p><strong>{% trans "Name and surname:" %}</strong> {{ object.first_name }} {{ object.last_name }}</p>
+                <p><strong>{% trans "Email:" %}</strong> {{ object.email }}</p>
+                <p><strong>{% trans "Query:" %}</strong> {{ object.query }}</p>
+                <div style="display: inline-block; float: left"><p><strong>{% trans "Files:" %}</strong></p></div>
+                <div style="display: inline-block"><ul class="file_list">
+                    {% for i in files %}
+                        <li></li><a href="{% url 'app:project_file_download' pk=object.id file=i %}">{{ i }}</a>
+                    {% endfor %}
+                </ul></div>
+            </div>
+        </div>
+        <div class="row-fluid">
+            <div class="span12">
+                <a class="all_files_url" href="{% url "app:project_files_download" pk=object.id %}">{% trans "Download all files" %}</a>
+            </div>
+        </div>
+
+        <div class="row-fluid topSpace">
+            <div class="span12">
+                <h3 class="twoLines"></h3>
+            </div>
+        </div>
+
+        <div class="row-fluid">
+            <div class="span6">
+                <a class="custom_button blue" href="{% url "app:close_project" pk=object.id %}">{% trans "Close project" %}</a>
+            </div>
+            <div class="span6">
+                <a class="custom_button red pull-right" href="{% url "app:project_delete" pk=object.id %}">{% trans "Delete project" %}</a>
+            </div>
+        </div>
+
+    </div>
+{% endblock %}
