@@ -82,7 +82,7 @@
         <div id="toggled_userbar" class="navbar-inner login-toolbar">
             <div class="container">
                 {% if request.user.is_authenticated %}
-                    <div class="row-v>fluid" style="margin-bottom: 0">
+                    <div class="row-fluid" style="margin-bottom: 0">
                         <div class="span10" style="margin-bottom: 0">
                             <div class="input-group">
                                 <a href="/logout" style="font-size: 16px">{{ user.username }}, {% trans 'logout' %}</a>
@@ -117,8 +117,10 @@
         </div>
     </div>
 
+    <div id="ajax">
     {% block content %}
     {% endblock %}
+    </div>
 
     <div id="footer">
         <div class="container">
@@ -212,6 +214,23 @@ jQuery("#hide_userbar").click(function () {
         jQuery("#SP_Modal").modal("toggle");
     });
 })(jQuery);
+
+jQuery("#search").keyup(
+    function () {
+        console.log("key sroke");
+        if (this.timer) {
+            window.clearTimeout(this.timer);
+            this.timer=window.setTimeout(updatePg,1500);
+        }
+        else {
+            this.timer=window.setTimeout(updatePg,1500);
+        }
+    });
+function updatePg(){
+    var info = jQuery("#search").val();
+    console.log(info);
+    jQuery('#ajax').load("../search_list/"+info).hide().fadeIn();
+}
 </script>
 
 </body>

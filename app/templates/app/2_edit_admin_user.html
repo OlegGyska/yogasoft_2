@@ -30,45 +30,48 @@
                                 <table class="permissions_table">
                                     <tr>
                                         <td>
-                                            <input id="test" class="custom_checkbox" name="blog_admin" type="checkbox" {% if blog_admin %} checked {% endif %}/><label for="test">{% trans "Blog administration:" %}</label>
+                                            <input class="custom_checkbox" name="blog_admin" type="checkbox" id="blog_admin" {% if blog_admin %} checked {% endif %}/><label for="blog_admin"></label><span class="custom_checkbox">{% trans "Blog administration" %}</span>
                                         </td>
                                     </tr>
-                                    <tr class="permissions_table">
-                                        <td class="permissions_table"><label>{% trans "Blog administration:" %}</label></td>
-                                        <td><input class="custom_checkbox" name="blog_admin" type="checkbox" {% if blog_admin %} checked {% endif %}/></td>
-
+                                    <tr>
+                                        <td>
+                                            <input class="custom_checkbox" name="tags_admin" type="checkbox" id="tags_admin" {% if tags_admin %} checked {% endif %}/><label for="tags_admin"></label><span class="custom_checkbox">{% trans "Tags administration" %}</span>
+                                        </td>
                                     </tr>
-                                    <tr class="permissions_table">
-                                        <td class="permissions_table"><label>{% trans "Tags administration:" %}</label></td>
-                                        <td><input class="checkbox checkbox_align" name="tags_admin" type="checkbox" {% if tags_admin %} checked {% endif %}/></td>
+                                    <tr>
+                                        <td>
+                                            <input class="custom_checkbox" name="portfolio_admin" type="checkbox" id="portfolio_admin" {% if portfolio_admin %} checked {% endif %}/><label for="portfolio_admin"></label><span class="custom_checkbox">{% trans "Portfolio administration" %}</span>
+                                        </td>
                                     </tr>
-                                    <tr class="permissions_table">
-                                        <td><label>{% trans "Portfolio administration:" %}</label></td>
-                                        <td><input class="checkbox checkbox_align" name="portfolio_admin" type="checkbox" {% if portfolio_admin %} checked {% endif %}/></td>
+                                    <tr>
+                                        <td>
+                                            <input class="custom_checkbox" name="testimonials_admin" type="checkbox" id="testim_admin" {% if testimonials_admin %} checked {% endif %}/><label for="testim_admin"></label><span class="custom_checkbox">{% trans "Testimonials administration" %}</span>
+                                        </td>
                                     </tr>
-                                    <tr class="permissions_table">
-                                        <td><label>{% trans "Testimonials administration:" %}</label></td>
-                                        <td><input class="checkbox checkbox_align" name="testimonials_admin" type="checkbox" {% if testimonials_admin %} checked {% endif %}/></td>
+                                    <tr>
+                                        <td>
+                                            <input class="custom_checkbox" name="projects_admin" type="checkbox" id="projects_admin" {% if projects_admin %} checked {% endif %}/><label for="projects_admin"></label><span class="custom_checkbox">{% trans "Project administration" %}</span>
+                                        </td>
                                     </tr>
-                                    <tr class="permissions_table">
-                                        <td><label>{% trans "Project administration:" %}</label></td>
-                                        <td><input class="checkbox checkbox_align" name="projects_admin" type="checkbox" {% if projects_admin %} checked {% endif %}/></td>
+                                    <tr>
+                                        <td>
+                                            <input class="custom_checkbox" name="user_messages" type="checkbox" id="user_messages" {% if user_messages %} checked {% endif %}/><label for="user_messages"></label><span class="custom_checkbox">{% trans "Feedback administration" %}</span>
+                                        </td>
                                     </tr>
-                                    <tr class="permissions_table">
-                                        <td><label>{% trans "Feedback administration:" %}</label></td>
-                                        <td><input class="checkbox checkbox_align" name="user_messages" type="checkbox" {% if user_messages %} checked {% endif %}/></td>
+                                    <tr>
+                                        <td>
+                                            <input class="custom_checkbox" name="comments_admin" type="checkbox" id="comments_admin" {% if comments_admin %} checked {% endif %}/><label for="comments_admin"></label><span class="custom_checkbox">{% trans "Comments administration" %}</span>
+                                        </td>
                                     </tr>
-                                    <tr class="permissions_table">
-                                        <td><label>{% trans "Comments administration:" %}</label></td>
-                                        <td><input class="checkbox checkbox_align" name="comments_admin" type="checkbox" {% if comments_admin %} checked {% endif %}/></td>
+                                    <tr>
+                                        <td>
+                                            <input class="custom_checkbox" name="admin_users" type="checkbox" id="admin_users" {% if admin_users %} checked {% endif %}/><label for="admin_users"></label><span class="custom_checkbox">{% trans "Administrator users" %}</span>
+                                        </td>
                                     </tr>
-                                    <tr class="permissions_table">
-                                        <td><label>{% trans "Administrator users:" %}</label></td>
-                                        <td><input class="checkbox checkbox_align" name="admin_users" type="checkbox" {% if admin_users %} checked {% endif %}/> </td>
-                                    </tr>
-                                    <tr class="permissions_table">
-                                        <td><label>{% trans "General users:" %}</label></td>
-                                        <td><input class="checkbox checkbox_align" name="general_users" type="checkbox" {% if general_users %} checked {% endif %}/></td>
+                                    <tr>
+                                        <td>
+                                            <input class="custom_checkbox" name="general_users" type="checkbox" id="general_users" {% if general_users %} checked {% endif %}/><label for="general_users"></label><span class="custom_checkbox">{% trans "General users" %}</span>
+                                        </td>
                                     </tr>
                                </table>
                             </div>

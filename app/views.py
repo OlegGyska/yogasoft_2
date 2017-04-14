@@ -37,8 +37,9 @@ CONTACT_US_ON_PAGE = 10
 class MainPage(TemplateView):
     template_name = 'base.html'
 
+
 class AltPage(TemplateView):
-    template_name = 'base_2.html'
+    template_name = 'app/index.html'
 
 
 class LoginPage(TemplateView):
@@ -540,7 +541,7 @@ class EditAdminUser(TemplateView):
 @method_decorator(user_can_decorator(['general_users']), name='dispatch')
 class GeneralUsers(ListView):  # View and fast create general user
     model = User
-    template_name = "app/general_users.html"
+    template_name = "app/2_general_users.html"
     context_object_name = "users"
     paginate_by = USERS_ON_PAGE
 
@@ -613,7 +614,7 @@ class GeneralUsers(ListView):  # View and fast create general user
 
         return User.objects.filter(reduce(__and__, q_builder)).order_by(order_by)
 
-    @staticmethod
+
     def post(self, request):
         if 'save' in request.POST:
             new_user = request.POST['username']
@@ -641,7 +642,7 @@ class GeneralUsers(ListView):  # View and fast create general user
 @method_decorator(user_can_decorator(['general_users']), name='dispatch')
 class EditGeneralUser(TemplateView):  # Edit general user
     model = User
-    template_name = "app/edit_general_user.html"
+    template_name = "app/2_edit_general_user.html"
     context_object_name = "user_obj"
 
     def __init__(self, **kwargs):
@@ -795,13 +796,14 @@ class BlogPostDelete(DeleteView):
 @method_decorator(user_can_decorator(['projects_admin']), name='dispatch')
 class ProjectsListView(ListView):
     model = Project
-    template_name = "app/projects_list.html"
+    template_name = "app/2_projects_list.html"
+    paginate_by = 30
 
 
 @method_decorator(user_can_decorator(['projects_admin']), name='dispatch')
 class ProjectDetailView(DetailView):
     model = Project
-    template_name = "app/project_view.html"
+    template_name = "app/2_project_view.html"
 
     def get_context_data(self, **kwargs):
         """
@@ -882,24 +884,40 @@ def close_project(request, pk):
     return HttpResponseRedirect(request.META['HTTP_REFERER'])
 
 
-class SearchListAsView(ListView):
+class SearchListAsView(TemplateView):
     """ this class is responsible for search
 
     It searchs blog posts on info that user inputs, It uses Ajax queries
     """
-    template_name = 'app/ajax_list_view.html'
-    model = BlogPost
+    template_name = 'app/2_ajax_list_view.html'
 
     def get_context_data(self, **kwargs):
-        context = super(SearchListAsView, self).get_context_data(**kwargs)
-        # here we can add some additional context
-        context.update({
-            'tag_list': None,
-        })
+        context = {}
+        query = self.kwargs['info']
+        if len(query) < 3:
+            return context
+        found = False
+        blog_posts = BlogPost.objects.filter(Q(name__contains=query) | Q(nameUA__contains=query) |
+                                             Q(text__contains=query) | Q(textUA__contains=query))[:15]
+        context["blog_posts"] = blog_posts
+        portfolio = PortfolioContent.objects.filter(Q(name__contains=query) | Q(nameUA__contains=query) |
+                                                    Q(description__contains=query) | Q(descriptionUA__contains=query))
+        context["portfolios"] = portfolio
+        if len(blog_posts) > 0 or len(portfolio) > 0:
+            found = True
+        context["found"] = found
         return context
 
-    def get_queryset(self):
-        return BlogPost.objects.filter(Q(name__contains=self.kwargs['info']) | Q(text__contains=self.kwargs['info']))
+    #def get_context_data(self, **kwargs):
+    #    context = super(SearchListAsView, self).get_context_data(**kwargs)
+    #    # here we can add some additional context
+    #    context.update({
+    #        'tag_list': None,
+    #    })
+    #    return context
+
+    #def get_queryset(self):
+    #    return BlogPost.objects.filter(Q(name__contains=self.kwargs['info']) | Q(text__contains=self.kwargs['info']))
 
 
 @method_decorator(user_can_decorator(['portfolio_admin']), name='dispatch')
@@ -961,7 +979,7 @@ class ChangePortfolio(UpdateView):
 @method_decorator(user_can_decorator(['comments_admin']), name='dispatch')
 class CommentsAdmin(ListView):
     model = Comment
-    template_name = 'app/comments_admin.html'
+    template_name = 'app/2_comments_admin.html'
     context_object_name = 'comments'
     paginate_by = 10
 

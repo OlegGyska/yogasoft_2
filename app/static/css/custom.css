@@ -198,7 +198,9 @@
 .custom_pagination span.text {
 	font-size: 16px;
 }
-
+a.custom_button {
+	display: inline-block;
+}
 a.custom_button.blue,
 input[type="submit"].custom_button.blue,
 input[type="file"].custom_button.blue,
@@ -238,9 +240,12 @@ button.custom_button.red:hover {
 a.custom_button.big,
 input[type="submit"].custom_button.big,
 button.custom_button.big {
+	display: inline-block;
 	font-size: 17px;
 	padding: 6px 22px 6px 22px;
 	min-width: 100px;
+	margin: 0;
+	line-height: 30px;
 }
 a.custom_button.small,
 input[type="submit"].custom_button.small,
@@ -478,18 +483,132 @@ ul.admin_menu {
 	font-size: 16px;
 }
 
-input[type="checkbox"] {
+input[type="checkbox"].custom_checkbox {
 	display: none;
 }
+input[type="checkbox"].custom_checkbox + label{
+	display: inline-block;
+}
+span.custom_checkbox {
+	display: inline-block;
+	position: relative;
+	bottom: 2px;
+	left: 3px;
+}
 input[type="checkbox"].custom_checkbox + label:before{
-	content: "\e153";
+	content: "\e154   ";
 	color: #29bbf2;
 	display: inline-block;
 	font: 24px/1em 'Glyphicons';
 }
 input[type="checkbox"].custom_checkbox:checked + label:before{
-	content: "\e154";
+	content: "\e153   ";
 	color: #29bbf2;
 	display: inline-block;
 	font: 24px/1em 'Glyphicons';
+}
+.permissions_table td {
+	height: 40px;
+}
+
+
+.admin_navbar .navbar-inner {
+	border-bottom: 1px solid lightgray;
+	border-top: 0;
+	min-height: 36px;
+	padding: 0;
+}
+.admin_navbar span.an_text {
+	display: inline-block;
+	margin: 7px 0 0 10px;
+	font-size: 14px;
+}
+.admin_navbar ul.an_dropdown {
+	list-style: none;
+	display: inline-block;
+	margin: 0 20px 10px 5px;
+	font-size: 14px;
+}
+
+.admin_navbar .an_button i::before{
+	position: relative;
+	font-size: 23px;
+	top: 8px;
+	margin-right: 20px;
+}
+.admin_navbar .an_button.active i::before{
+	color: #29bbf2;
+}
+.admin_navbar form.an_form {
+	display: inline-block;
+	margin: 0;
+}
+.admin_navbar form.an_form input[type="text"] {
+	margin: 0;
+}
+.admin_navbar button.na_search {
+	padding: 4px 5px 0 5px;
+}
+.admin_navbar button.na_search i:before {
+	position: relative;
+	color: #29bbf2;
+}
+.admin_navbar button.na_search:hover i:before {
+	position: relative;
+	color: white;
+}
+
+.projects_table  {
+	width: 100%;
+}
+.projects_table tr {
+	border-bottom: 1px solid lightgray;
+	height: 50px;
+}
+.projects_table td {
+	font-size: 16px;
+	cursor: hand;
+	cursor: pointer;
+}
+
+ul.file_list {
+	list-style: none;
+}
+ul.file_list a {
+	color: #29bbf2;
+	font-size: 15px;
+	cursor: hand;
+	cursor: pointer;
+
+}
+
+a.all_files_url {
+	display: inline-block;
+	font-size: 16px;
+	color: #29bbf2;
+	margin-top: 15px;
+	cursor: hand;
+	cursor: pointer;
+
+}
+
+.comments_table {
+	width: 100%;
+	border-top: 1px solid lightgray;
+	border-bottom: 1px solid lightgray;
+}
+.comments_table tr {
+	height: 30px;
+}
+.comments_table tr.nd_row {
+	border-bottom: 1px solid lightgray;
+}
+.comments_table td {
+	padding-right: 20px;
+	padding-left: 20px;
+	vertical-align: middle;
+}
+
+.search_well {
+	background-color: #e7f8fe;
 }

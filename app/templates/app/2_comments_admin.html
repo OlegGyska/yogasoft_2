@@ -1,0 +1,72 @@
+{% extends 'base_2.html' %}
+{% load i18n %}
+{% load popular_tags %}
+{% block title %}
+    {% trans "Blog" %}
+{% endblock %}
+{% block content %}
+    <div class="titleBox">
+        <div class="container">
+            <h1 class="big pull-left">{% trans 'Comments administration' %}</h1>
+        </div>
+    </div>
+    <div class="container" style="min-height: 500px">
+         <div class="row-fluid topSpace">
+            <div class="pagination custom_pg">
+                <ul>
+                    <li class="page-item {% if mod == 'all' %}active{% endif %}"><a class="page-link" href="{% url 'app:comment_admin' %}?mod=all&page=1">{% trans "All" %}</a></li>
+                    <li class="page-item {% if mod == 'true' %}active{% endif %}"><a class="page-link" href="{% url 'app:comment_admin' %}?mod=true&page=1">{% trans "Moderated" %}</a></li>
+                    <li class="page-item {% if mod == 'false' %}active{% endif %}"><a class="page-link" href="{% url 'app:comment_admin' %}?mod=false&page=1">{% trans "Not moderated" %}</a></li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="row-fluid">
+            <div class="span12">
+                <table class="comments_table">
+
+                    {% for comment in comments %}
+                        <tr class="st_row">
+                            <td style="width: 100%">{{ comment.author_name }} {{ comment.time }}</td>
+                            <td rowspan="2">
+                                {% if not comment.is_moderated %}
+                                    {% if comment.blog %}
+                                        <a class="custom_button blue" href="{% url "app:comment_admin_moderate" pk=comment.id %}">{% trans "Moderate" %}</a>
+                                    {% else %}
+                                        <a class="custom_button blue" href="{% url "app:comment_admin_moderate_sec" pk=comment.id %}">{% trans "Moderate" %}</a>
+                                    {% endif %}
+                                {% endif %}
+                            </td>
+                            <td rowspan="2">
+                                {% if comment.blog %}
+                                    <a class="custom_button red" href="{% url "app:comment_admin_delete" pk=comment.id %}">{% trans "Delete" %}</a>
+                                {% else %}
+                                    <a class="custom_button red" href="{% url "app:comment_admin_delete_sec" pk=comment.id %}">{% trans "Delete" %}</a>
+                                {% endif %}
+                            </td>
+                        </tr>
+                        <tr class="nd_row">
+                            <td><{{ comment.message }}/td>
+                        </tr>
+                    {% endfor %}
+                </table>
+            </div>
+        </div>
+
+        <div class="row-fluid topSpace">
+            <div class="span12">
+                {% trans "Page:" %} {{ page_obj.number }} {% trans "of" %} {{ page_obj.paginator.num_pages }}&nbsp|&nbsp
+                {% if page_obj.has_previous %}
+                    <a href="{% url 'app:projects_list' %}{% q_transform request page=page_obj.previous_page_number %}">{% trans "Previous" %}</a>
+                {% else %}
+                    <span style="color: grey">{% trans "Previous" %}</span>
+                {% endif %}
+                {% if page_obj.has_next %}
+                    <a href="{% url 'app:projects_list' %}{% q_transform request page=page_obj.next_page_number %}">{% trans "Next" %}</a>
+                {% else %}
+                    <span style="color: grey">{% trans "Next" %}</span>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+{% endblock %}

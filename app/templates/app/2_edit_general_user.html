@@ -1,0 +1,64 @@
+{% extends 'base_2.html' %}
+{% load i18n %}
+{% load popular_tags %}
+{% block title %}
+    {% trans "Blog" %}
+{% endblock %}
+{% block content %}
+    <div class="titleBox">
+        <div class="container">
+            <h1 class="big pull-left">{% trans "Edit user" %}</h1>
+        </div>
+    </div>
+    <div class="container">
+
+        {% if user_exist %}
+            <div class="row-fluid topSpace">
+                <div class="span12">
+                    <form action="{% url 'app:edit_general_user' user_obj.id %}" method="POST" onsubmit="return confirm('{% trans "Save user?" %}')">
+                        <div class="row-fluid">
+                            <div class="span4">
+                                {% csrf_token %}
+                                {% if login_used %}
+                                    <h3 style="color: red">Login is already used</h3>  <!-- TODO resize checkbox -->
+                                {% endif %}
+                                <p><label>{% trans "Username:" %}</label><input class="form-control wide"  maxlength="30" name="username" type="text" value="{{ user_obj.username }}" required /></p>
+                                <p><label>{% trans "First name:" %}</label><input class="form-control wide" maxlength="30" name="first_name" type="text" value="{{ user_obj.first_name }}"/></p>
+                                <p><label>{% trans "Last name:" %}</label><input class="form-control wide" maxlength="30" name="last_name" type="text" value="{{ user_obj.last_name }}"/></p>
+                                <p><label>{% trans "Email:" %}</label><input class="form-control wide"  maxlength="30" name="email" type="email" value="{{ user_obj.email }}"/></p>
+                                <table class="permissions_table">
+                                    <tr>
+                                        <td>
+                                            <input class="custom_checkbox" name="is_active" type="checkbox" id="is_active" {% if user_obj.is_active %} checked {% endif %}/><label for="is_active"></label><span class="custom_checkbox">{% trans "Is active:" %}</span>
+                                        </td>
+                                    </tr>
+                               </table>
+                            </div>
+                        </div>
+                        <div class="row-fluid">
+                            <div class="span4">
+                               <input type="submit" class="custom_button blue big" value="{% trans "Save" %}" name="save">
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+            <div class="row-fluid topSpace">
+                <div class="span12">
+                    <h3 class="twoLines">{% trans "Change password" %}</h3>
+                </div>
+            </div>
+            <div class="row-fluid">
+                <div class="span4">
+                    <form action="{% url 'app:edit_general_user' user_obj.id %}" method="POST" onsubmit="return confirm('{% trans "Save password?" %}')">
+                        {% csrf_token %}
+                        <p><label>{% trans "New password:" %}</label><input class="form-control wide"  minlength="4" maxlength="30" name="password" type="password" required /></p>
+                        <input type="submit" class="custom_button blue" value="{% trans "Change password" %}" name="change_pass">
+                    </form>
+                </div>
+            </div>
+        {% else %}
+            <h1>User does not exist or wrong user id <a href="{% url 'app:general_users' %}">back</a></h1>
+        {% endif %}
+    </div>
+{% endblock %}

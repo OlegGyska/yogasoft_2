@@ -1,0 +1,36 @@
+div, span {
+    border: 0;
+}
+
+/* Global settings */
+:root {
+    --global_width: 1000px;
+    --columns: 12;
+}
+
+
+
+
+
+.container {
+    width: 100%;
+    max-width: var(--global_width);
+    margin: auto;
+    padding-left: 10px;
+    padding-right: 10px;
+}
+.row {
+    margin-right: -10px;
+    margin-left: -10px;
+}
+.wide {
+    width: 100%;
+}
+
+
+body {
+    margin: 0;
+}
+.demo {
+    border: 1px solid yellow;
+}
