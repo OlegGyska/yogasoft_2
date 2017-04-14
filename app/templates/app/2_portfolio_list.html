@@ -14,46 +14,31 @@
         <div class="row-fluid topSpace">
             <div class="span12">
                 <ul class="portfolioList col2" id="portfolio1">
-                    {% for item in object_list %}
-
+                    {% for item in portfoliocontent_list %}
                     <li>
                         <div class="easyBox flat doCenter">
-                          <a href="{% url "app:portfolio_detail" pk=item.0.id %}">
-                            <div style="width: 100%; height: 200px">
-                                <img src={{ item.0.imagecontentclass_set.all.0.image.url }}>
+                          <a href="{% url "app:portfolio_detail" pk=item.id %}">
+                            <div class="portfolio_image">
+                                <img src={{ item.imagecontentclass_set.all.0.image.url }} >
                             </div>
 
                             <span class="btn-link btn-block">
                                 {% if LANGUAGE_CODE == 'en' %}
-                                    <h3>{{ item.0.name }}</h3>
+                                    <h3>{{ item.name }}</h3>
                                 {% else %}
-                                    <h3>{{ item.0.nameUA }}</h3>
+                                    <h3>{{ item.nameUA }}</h3>
                                 {% endif %}
                             </span>
-                            <span class="halflings tag metaText">
-                                <i></i> Branding, Web
+                            <span>
+                                {% if LANGUAGE_CODE == 'en' %}
+                                    {{ item.description|truncatechars:100 }}
+                                {% else %}
+                                    {{ item.descriptionUA|truncatechars:100 }}
+                                {% endif %}
                             </span>
                           </a>
                         </div>
                     </li>
-                    <li>
-                        <div class="easyBox flat doCenter">
-                           <a href="{% url "app:portfolio_detail" pk=item.1.id %}">
-                            <img src={{ item.1.imagecontentclass_set.all.0.image.url }} >
-                             <span class="btn-link btn-block">
-                                {% if LANGUAGE_CODE == 'en' %}
-                                    <h3>{{ item.0.name }}</h3>
-                                {% else %}
-                                    <h3>{{ item.0.nameUA }}</h3>
-                                {% endif %}
-                            </span>
-                            <span class="halflings tag metaText">
-                                <i></i> Branding, Web
-                            </span>
-                            </a>
-                        </div>
-                    </li>
-
                     {% endfor %}
                 </ul>
             </div>

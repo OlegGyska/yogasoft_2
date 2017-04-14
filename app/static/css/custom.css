@@ -610,5 +610,35 @@ a.all_files_url {
 }
 
 .search_well {
-	background-color: #e7f8fe;
+	background-color: #e8f4ff;
+	padding: 10px 20px 10px 10px;
+	margin-bottom: 10px;
+	border: 1px solid #e8f4ff;
+}
+.search_well:hover {
+	/*background-color: #cde8ff;*/
+	border: 1px solid #29bbf2;
+}
+.search_well a {
+	font-size: 16px;
+	color: #29bbf2;
+}
+
+.portfolio_image img {
+	width: 100%;
+}
+.portfolio_image {
+	display: block;
+	height: 250px;
+}
+@media (max-width : 768px) {
+	.portfolio_image {
+    height: 100px;
+  }
+}
+.easyBox a:hover {
+	color: #333333;
+}
+.easyBox:hover {
+	border: 1px solid #29bbf2;
 }

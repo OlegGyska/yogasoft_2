@@ -71,7 +71,7 @@
                 <form role="search">
                     {% csrf_token %}
                     <div class="input-group">
-                        <input id="search" style="display: table-cell" type="text" class="form-control" placeholder="{% trans 'Search' %}...">
+                        <input id="search" style="display: table-cell" type="text" class="form-control" placeholder="{% trans 'Search' %}..." autocomplete="off">
                         <span class="input-group-btn" style="display: table-cell">
                             <button id="hide_search" class="btn btn-danger" type="reset"><span class="halflings remove"><i></i></span></button>
                         </span>
@@ -220,10 +220,10 @@ jQuery("#search").keyup(
         console.log("key sroke");
         if (this.timer) {
             window.clearTimeout(this.timer);
-            this.timer=window.setTimeout(updatePg,1500);
+            this.timer=window.setTimeout(updatePg,1200);
         }
         else {
-            this.timer=window.setTimeout(updatePg,1500);
+            this.timer=window.setTimeout(updatePg,1200);
         }
     });
 function updatePg(){

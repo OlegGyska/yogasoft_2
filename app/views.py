@@ -694,20 +694,22 @@ class EditGeneralUser(TemplateView):  # Edit general user
 class PortfolioListView(ListView):
     """02.03.2017 Taras  this list returns all Portfolio projects of our agency """
     template_name = 'app/2_portfolio_list.html'
+    model = PortfolioContent
+
 
     # paginate_by = 4
 
-    def get_queryset(self):
-        return PortfolioContent.objects.all()
+    #def get_queryset(self):
+    #    return PortfolioContent.objects.all()
 
-    def get_context_data(self, **kwargs):
-        q = super().get_context_data()
-        _list = list(q['object_list'])
-        new_list = list(zip(_list[::2], _list[1::2]))
-        if len(_list) % 2:
-            new_list.append((_list[-1], None))
-        q['object_list'] = new_list
-        return q
+    #def get_context_data(self, **kwargs):
+    #    q = super().get_context_data()
+    #    _list = list(q['object_list'])
+    #    new_list = list(zip(_list[::2], _list[1::2]))
+    #    if len(_list) % 2:
+    #        new_list.append((_list[-1], None))
+    #    q['object_list'] = new_list
+    #    return q
 
 
 class PortfolioDetailView(DetailView):

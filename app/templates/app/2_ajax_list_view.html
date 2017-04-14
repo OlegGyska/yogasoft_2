@@ -13,12 +13,12 @@
         </div>
         <div class="row-fluid">
             {% for post in blog_posts %}
-                <div class="search_well">
+                <div class="search_well" onclick="location.href='{% url 'app:blog_detail_view' post.id %}'">
                     {% if LANGUAGE_CODE == 'en' %}
-                        <p><strong>{{ post.name }}</strong> - {{ post.text|truncatechars:120 }}</p>
+                        <p><strong>{{ post.name }}</strong> - {{ post.text|truncatechars:200 }}</p>
                         <a href="{% url 'app:blog_detail_view' post.id %}">{% trans "More..." %}</a>
                     {% else %}
-                        <p><strong>{{ post.nameUA }}</strong> - {{ post.textUA|truncatechars:120 }}</p>
+                        <p><strong>{{ post.nameUA }}</strong> - {{ post.textUA|truncatechars:200 }}</p>
                         <a href="{% url 'app:blog_detail_view' post.id %}">{% trans "More..." %}</a>
                     {% endif %}
                 </div>
@@ -31,12 +31,12 @@
         </div>
         <div class="row-fluid">
             {% for prt in portfolios %}
-                <div class="search_well">
+                <div class="search_well" onclick="location.href='{% url "app:portfolio_detail" prt.id %}'">
                     {% if LANGUAGE_CODE == 'en' %}
-                        <p><strong>{{ prt.name }}</strong> - {{ prt.description|truncatechars:120 }}</p>
+                        <p><strong>{{ prt.name }}</strong> - {{ prt.description|truncatechars:200 }}</p>
                         <a href="{% url "app:portfolio_detail" prt.id %}">{% trans "More..." %}</a>
                     {% else %}
-                        <p><strong>{{ prt.nameUA }}</strong> - {{ prt.descriptionUA|truncatechars:120 }}</p>
+                        <p><strong>{{ prt.nameUA }}</strong> - {{ prt.descriptionUA|truncatechars:200 }}</p>
                         <a href="{% url "app:portfolio_detail" prt.id %}">{% trans "More..." %}</a>
                     {% endif %}
                 </div>
